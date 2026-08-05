@@ -1,0 +1,112 @@
+generated: '2026-08-04'
+method: probed
+source: https://pipe.neurable.com/.well-known/openid-configuration (HTTP 200) + https://pipe.neurable.com/.well-known/jwks.json (HTTP 200) + openapi/_original/neurable-pipe-openapi.json
+docs: null
+summary:
+  types:
+  - oauth2
+  - openIdConnect
+  oauth2_flows:
+  - authorizationCode
+  - clientCredentials
+  api_key_in: []
+  spec_declares_security_schemes: false
+notes: >-
+  Neurable publishes no public authentication documentation. This profile was probed live: the
+  pipe service at pipe.neurable.com serves a complete OpenID Connect Discovery document and a
+  JWKS, and its own OpenAPI describes the /oauth/authorize, /oauth/token, /oidc/userinfo and
+  /.well-known/jwks.json operations. IMPORTANT GAP — none of the three published Neurable
+  OpenAPI documents declares a components.securitySchemes block, and no operation carries a
+  security requirement, even though the Analytics Service tags five of its six operations
+  "protected". The auth model therefore has to be inferred from the discovery document rather
+  than read off the contract.
+schemes:
+- name: openIdConnect
+  type: openIdConnect
+  openIdConnectUrl: https://pipe.neurable.com/.well-known/openid-configuration
+  issuer: https://pipe.neurable.com
+  description: >-
+    The pipe service is the Neurable identity provider. It advertises OIDC Discovery metadata
+    with an issuer of https://pipe.neurable.com, RS256-signed ID tokens, and the standard
+    iss/sub/aud/exp/iat/nonce/email claims. claims_parameter_supported is false.
+  endpoints:
+    authorization_endpoint: https://pipe.neurable.com/oauth/authorize
+    token_endpoint: https://pipe.neurable.com/oauth/token
+    userinfo_endpoint: https://pipe.neurable.com/oidc/userinfo
+    jwks_uri: https://pipe.neurable.com/.well-known/jwks.json
+  id_token_signing_alg_values_supported:
+  - RS256
+  subject_types_supported:
+  - public
+  claims_supported:
+  - iss
+  - sub
+  - aud
+  - exp
+  - iat
+  - nonce
+  - email
+  sources:
+  - well-known/neurable-pipe-openid-configuration.json
+- name: oauth2
+  type: oauth2
+  description: >-
+    OAuth 2.0 authorization server co-located with the OIDC provider. The /oauth/authorize
+    operation makes code_challenge and code_challenge_method REQUIRED query parameters, so PKCE
+    is mandatory on the authorization-code flow, and it also requires an explicit `audience`
+    parameter (RFC 8707-style resource targeting). Public clients are supported —
+    token_endpoint_auth_methods_supported includes "none" alongside client_secret_post.
+  flows:
+  - flow: authorizationCode
+    authorization_endpoint: https://pipe.neurable.com/oauth/authorize
+    token_endpoint: https://pipe.neurable.com/oauth/token
+    pkce: S256
+    pkce_required: true
+    required_parameters:
+    - client_id
+    - redirect_uri
+    - response_type
+    - code_challenge
+    - code_challenge_method
+    - scope
+    - audience
+    scopes:
+    - demos:all:read
+    - demos:prime:read
+    - session:stream:create
+    - openid
+    - email
+  - flow: clientCredentials
+    token_endpoint: https://pipe.neurable.com/oauth/token
+    note: >-
+      Advertised in grant_types_supported. The token endpoint's request body schema
+      (Body_post_oauth_token_oauth_token_post) is served as
+      application/x-www-form-urlencoded.
+  - flow: refreshToken
+    token_endpoint: https://pipe.neurable.com/oauth/token
+    note: refresh_token appears in grant_types_supported.
+  response_types_supported:
+  - code
+  token_endpoint_auth_methods_supported:
+  - none
+  - client_secret_post
+  sources:
+  - well-known/neurable-pipe-openid-configuration.json
+  - openapi/neurable-pipe-service-openapi.yml
+unauthenticated_surface:
+- operation: create_headset_license_open_headset_license_post
+  method: POST
+  path: /open/headset/license
+  host: https://analytics-service.neurable.com
+  note: >-
+    Tagged "open" (as opposed to the "protected" tag on every other Analytics Service
+    operation), which is the only in-spec signal that it is reachable without a token. It
+    issues an HMAC-signed HeadsetLicense keyed to a device serial_number + firmware_uuid; the
+    documented error enum (SERIAL_NUMBER_UNAUTHORIZED, SERIAL_NUMBER_ALREADY_ISSUED) shows
+    authorization is enforced on the serial number rather than on a caller credential.
+  probed: not exercised — no request was sent to this endpoint.
+cross_links:
+  scopes: scopes/neurable-scopes.yml
+  conventions: conventions/neurable-conventions.yml
+  conformance: conformance/neurable-conformance.yml
+  well_known: well-known/neurable-well-known.yml

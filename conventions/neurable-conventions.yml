@@ -1,0 +1,96 @@
+generated: '2026-08-04'
+method: derived
+source: >-
+  Derived from openapi/_original/neurable-analytics-service-openapi.json,
+  openapi/_original/neurable-pipe-openapi.json and the live OIDC discovery document at
+  https://pipe.neurable.com/.well-known/openid-configuration. Neurable publishes no developer
+  documentation, so every convention below is read off the contract or the discovery document —
+  nothing here is taken from prose that does not exist.
+summary: >-
+  Two FastAPI services with materially different postures. The pipe service is a
+  standards-conformant OAuth 2.0 / OpenID Connect authorization server. The Analytics Service is a
+  plain JSON API with a chunked-upload protocol and no declared security. Neither declares
+  idempotency, pagination, rate limiting, request-id tracing, or a versioning scheme in-contract.
+authentication:
+  styles: [oauth2_bearer, oidc]
+  authorization_server: https://pipe.neurable.com
+  declared_in_spec: false
+  note: >-
+    No OpenAPI document declares components.securitySchemes, and no operation carries a `security`
+    requirement — the Analytics Service instead signals intent with the operation tags "open" and
+    "protected". An integrator cannot tell from the contract which token to present or where.
+  see: authentication/neurable-authentication.yml
+idempotency:
+  documented: false
+  header: null
+  note: >-
+    No Idempotency-Key mechanism is declared or documented. The chunked upload flow is however
+    idempotency-adjacent by construction: POST /recording/upload/start mints a server-issued
+    `upload_token`, each chunk is addressed by an explicit 0-based `chunk_idx` query parameter, and
+    POST /recording/upload/finalize/{upload_token} is a separate commit step. That makes a chunk
+    re-PUT at the same index safely repeatable in principle, but Neurable does not state that
+    guarantee, so it must not be assumed.
+  do_not_assume: true
+pagination:
+  style: none
+  note: No operation in either service declares limit/offset/cursor/page parameters or a paged envelope.
+versioning:
+  scheme: none-in-path
+  note: >-
+    No version segment appears in any published path. The two services version themselves
+    inconsistently in info.version — the pipe service uses semver ("0.0.24" in production,
+    "0.0.34" in staging) and exposes GET /version returning {"version": "0.0.24"}, while the
+    Analytics Service and Brain Health Service report a build identifier of the form
+    "arm64-<git-sha>" ("arm64-3a9ffd8", "arm64-c04afab"). Neither is a consumer-facing API version.
+  see: lifecycle/neurable-lifecycle.yml
+error_envelope:
+  media_type: application/json
+  shape: 'FastAPI HTTPValidationError ({"detail": [ValidationError, ...]})'
+  rfc9457: false
+  application_level: >-
+    The headset licensing flow reports domain failures as HTTP 200 with success:false and an enum
+    in `detail` — branch on the body, not the status.
+  see: errors/neurable-problem-types.yml
+rate_limiting:
+  documented: false
+  headers: []
+  note: No rate-limit headers, quotas, or 429 responses are declared or documented.
+request_tracing:
+  request_id_header: null
+  documented: false
+media_types:
+  request:
+  - application/json
+  - multipart/form-data   # PUT /recording/upload/{upload_token} — the chunk body
+  - application/x-www-form-urlencoded   # POST /oauth/token
+  response:
+  - application/json
+identifiers:
+  recording_id: {type: string, format: uuid}
+  upload_token: {type: string, opaque: true, issued_by: POST /recording/upload/start}
+  participant_id: {type: string, issued_by: POST /participant}
+  firmware_uuid: {type: string}
+  serial_number: {type: string}
+  see: data-model/neurable-data-model.yml
+upload_protocol:
+  name: three-step chunked upload
+  steps:
+  - {step: 1, operation: upload_recording_start_recording_upload_start_post, method: POST, path: /recording/upload/start, returns: upload_token}
+  - {step: 2, operation: upload_recording_chunk_recording_upload__upload_token__put, method: PUT, path: '/recording/upload/{upload_token}', repeat: per chunk, indexed_by: chunk_idx}
+  - {step: 3, operation: upload_recording_finalize_recording_upload_finalize__upload_token__post, method: POST, path: '/recording/upload/finalize/{upload_token}', returns: 'recording_id + file_size_b'}
+  max_chunk_size_bytes: 10485760
+  max_chunk_size_documented_as: 10MB
+  chunk_index_base: 0
+  note: Chunk ordering is caller-declared via chunk_idx; the server reassembles and verifies at finalize.
+data_export:
+  formats: [csv, parquet]
+  stages: [raw, filter, feature, metric]
+  note: >-
+    GET /recording/download/{recording_id} requires BOTH `stage` and `format` as query parameters —
+    neither has a default, so every download names the EEG processing stage it wants.
+cross_links:
+  authentication: authentication/neurable-authentication.yml
+  scopes: scopes/neurable-scopes.yml
+  errors: errors/neurable-problem-types.yml
+  lifecycle: lifecycle/neurable-lifecycle.yml
+  data_model: data-model/neurable-data-model.yml

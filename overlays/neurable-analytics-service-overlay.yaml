@@ -1,0 +1,78 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Neurable Analytics Service
+  version: 1.0.0
+  x-generated: '2026-08-04'
+  x-method: generated
+  x-source: openapi/neurable-analytics-service-openapi.yml
+  x-note: >-
+    Captures API Evangelist's enhancements over the verbatim spec Neurable serves at
+    https://analytics-service.neurable.com/openapi.json. The original is never mutated. Every
+    action below adds information the served document omits but that was observed live or is
+    read directly off the contract — the server it is actually hosted on, and the fact that
+    "protected" operations require a bearer token from the Neurable OIDC issuer. No operation,
+    parameter, schema or example is invented.
+extends: openapi/neurable-analytics-service-openapi.yml
+actions:
+- target: $
+  description: >-
+    Add the server the document is actually served from. The published spec declares no servers[],
+    so a generated client has no base URL at all.
+  update:
+    servers:
+    - url: https://analytics-service.neurable.com
+      description: Production (observed 2026-08-04, HTTP 200 at /openapi.json)
+- target: $.info
+  description: Add contact and provenance metadata absent from the served document.
+  update:
+    contact:
+      name: Neurable
+      email: hello@neurable.com
+      url: https://www.neurable.com/contact
+    x-api-evangelist:
+      profile: https://apis.io/providers/neurable/
+      harvested_from: https://analytics-service.neurable.com/openapi.json
+      harvested_on: '2026-08-04'
+      documentation_published_by_provider: false
+- target: $.components
+  description: >-
+    Declare the security scheme the service evidently uses. The pipe service at
+    pipe.neurable.com is a live OpenID Connect issuer, but this document declares no
+    securitySchemes at all — so no generated client knows to send a token.
+  update:
+    securitySchemes:
+      neurableOIDC:
+        type: openIdConnect
+        openIdConnectUrl: https://pipe.neurable.com/.well-known/openid-configuration
+        description: >-
+          INFERRED by API Evangelist, not declared by Neurable. Five of six operations carry the
+          tag "protected"; the only Neurable authorization server discovered is
+          https://pipe.neurable.com. Confirm with Neurable before relying on this.
+- target: $.tags
+  description: Document the meaning of the two tags the operations already carry.
+  update:
+  - name: open
+    description: Reachable without an access token (as signalled by the tag; not stated by Neurable).
+  - name: protected
+    description: Requires an access token (as signalled by the tag; the scope is not published).
+- target: $.paths['/recording/upload/start'].post
+  description: Record the chunked-upload contract that the operation descriptions state in prose.
+  update:
+    x-upload-protocol:
+      step: 1
+      of: 3
+      next: PUT /recording/upload/{upload_token}
+      commit: POST /recording/upload/finalize/{upload_token}
+      max_chunk_size_bytes: 10485760
+      chunk_index_base: 0
+- target: $.paths['/open/headset/license'].post
+  description: >-
+    Flag that this operation reports domain failures with HTTP 200 and success:false rather than a
+    4xx status — a trap for any client that branches on status code alone.
+  update:
+    x-error-in-2xx:
+      envelope: CreateHeadsetLicenseResponse
+      success_field: success
+      error_field: detail
+      codes: [SERIAL_NUMBER_UNAUTHORIZED, SERIAL_NUMBER_ALREADY_ISSUED]
+      see: errors/neurable-problem-types.yml

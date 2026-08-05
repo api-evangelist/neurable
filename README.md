@@ -42,5 +42,19 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Neurable is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/neurable_stock/
+Neurable is a Boston, Massachusetts neurotechnology company, founded in 2015 on University of Michigan
+EEG signal-processing research, that builds non-invasive brain-computer interface (BCI) hardware and the
+AI models that interpret the signal. Its consumer product is the MW75 Neuro — Master & Dynamic over-ear
+headphones with dry conductive-fabric EEG electrodes — alongside an MW75 Neuro Research Kit and a partner
+Development Kit for OEMs.
+
+Neurable publishes **no public developer portal, API reference, or SDK**. Its production backend services
+do, however, serve FastAPI-generated OpenAPI 3.1.0 descriptions anonymously at their host roots, and the
+pipe service is a live OpenID Connect provider. Those documents — harvested verbatim into `openapi/` —
+are the entire machine-readable contract that exists for Neurable, and everything else in this repository
+is derived from them or probed live.
+
+- https://www.neurable.com/
+- https://analytics-service.neurable.com/openapi.json
+- https://pipe.neurable.com/openapi.json
+- https://report.neurable.com/openapi.json

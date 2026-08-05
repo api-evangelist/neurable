@@ -1,0 +1,126 @@
+# Neurable
+
+> Neurable is a Boston, Massachusetts neurotechnology company (founded 2015, out of University of
+> Michigan EEG signal-processing research) that builds non-invasive brain-computer interface (BCI)
+> hardware and the AI that interprets the signal. Its shipping consumer product is the MW75 Neuro,
+> Master & Dynamic over-ear headphones with dry conductive-fabric EEG electrodes that measure focus,
+> fatigue and cognitive load.
+
+<!--
+  generated: 2026-08-04
+  method: generated
+  source: API Evangelist enrichment pipeline, from all/neurable/apis.yml + this repo's artifacts,
+          after live probes of every Neurable host. Neurable does not publish an llms.txt
+          (https://www.neurable.com/llms.txt -> 404), so this file is ours, not theirs.
+-->
+
+## What Neurable publishes
+
+Neurable has **no public developer portal, no API reference, and no published API documentation.**
+Its Development Kit is gated behind a "Request Dev Kit Access" form at https://www.neurable.com/dev-kit,
+and its internal wiki (https://wiki.neurable.com) and archive (https://archives.neurable.com) are
+private GitBook sites requiring a login.
+
+Its production backend services nevertheless serve FastAPI-generated OpenAPI 3.1.0 descriptions
+anonymously at their host roots. Those three documents are the entire machine-readable contract
+that exists for Neurable, and they are what this profile is built from.
+
+## APIs
+
+- [Neurable Analytics Service](https://analytics-service.neurable.com/openapi.json): OpenAPI 3.1.0,
+  6 operations. "Handles the full lifecycle of EEG analytics for both customers and internal
+  applications." Chunked recording upload (start / PUT chunks / finalize), recording download by
+  processing stage as CSV or Parquet, participant creation, and headset feature licensing.
+- [Neurable Pipe Service](https://pipe.neurable.com/openapi.json): OpenAPI 3.1.0, 7 operations.
+  "Real-time data processing service for analyzing EEG sensor data from Neurable hardware." Also the
+  Neurable identity provider — a full OAuth 2.0 / OpenID Connect authorization server.
+- [Neurable Brain Health Service](https://report.neurable.com/openapi.json): OpenAPI 3.1.0, but the
+  document declares **zero paths and zero schemas**. The service exists; its contract does not.
+
+## Authentication
+
+- [OpenID Connect discovery](https://pipe.neurable.com/.well-known/openid-configuration): issuer
+  `https://pipe.neurable.com`, RS256 ID tokens, authorization-code + refresh-token +
+  client-credentials grants, **PKCE (S256) mandatory**, an `audience` parameter required on
+  /oauth/authorize, and public clients supported (`token_endpoint_auth_methods_supported` includes
+  `none`).
+- [JWKS](https://pipe.neurable.com/.well-known/jwks.json): one RSA signing key, `alg` RS256.
+- Scopes advertised: `openid`, `email`, `demos:all:read`, `demos:prime:read`,
+  `session:stream:create`.
+- **Caveat for agents:** none of the three OpenAPI documents declares a `securitySchemes` block, and
+  no operation carries a `security` requirement — even the five Analytics Service operations tagged
+  `protected`. Which token goes where is not published. Do not guess; ask Neurable.
+
+## Key operations (Analytics Service)
+
+- `create_headset_license_open_headset_license_post` — POST /open/headset/license. Tagged `open`.
+  Issues an HMAC-signed, expiring headset feature license against a `serial_number` +
+  `firmware_uuid` for platform `MW75_Neuro`. Reports failure as **HTTP 200 with `success: false`**
+  and a `SERIAL_NUMBER_UNAUTHORIZED` / `SERIAL_NUMBER_ALREADY_ISSUED` enum — branch on the body,
+  not the status.
+- `upload_recording_start_recording_upload_start_post` — POST /recording/upload/start. Opens an
+  upload session and returns an `upload_token`. Send no file data here.
+- `upload_recording_chunk_recording_upload__upload_token__put` — PUT
+  /recording/upload/{upload_token}. Uploads one chunk, max 10MB, addressed by a 0-based `chunk_idx`.
+- `upload_recording_finalize_recording_upload_finalize__upload_token__post` — POST
+  /recording/upload/finalize/{upload_token}. Reassembles and verifies; returns `recording_id` and
+  `file_size_b`.
+- `download_recording_recording_download__recording_id__get` — GET
+  /recording/download/{recording_id}. Both `stage` (`raw` | `filter` | `feature` | `metric`) and
+  `format` (`csv` | `parquet`) are **required**; neither has a default.
+- `create_participant_participant_post` — POST /participant. Creates a research participant for the
+  calling user.
+
+## Key operations (Pipe Service)
+
+- `get_oauth_authorize_oauth_authorize_get` — GET /oauth/authorize (PKCE required).
+- `post_oauth_token_oauth_token_post` — POST /oauth/token (application/x-www-form-urlencoded).
+- `get_well_known_jwks__well_known_jwks_json_get` — GET /.well-known/jwks.json.
+- `get_well_known_openid_configuration__well_known_openid_configuration_get` — GET
+  /.well-known/openid-configuration.
+- `get_userinfo_oidc_userinfo_get` — GET /oidc/userinfo.
+- `get_version_version_get` — GET /version.
+- `get_me_me_get` — GET /me.
+
+## Products
+
+- [MW75 Neuro](https://www.neurable.com/products/mw75neuro): consumer EEG headphones (with Master & Dynamic).
+- [MW75 Neuro LT](https://www.neurable.com/products/mw75neurolt)
+- [Research Kit](https://www.neurable.com/products/research-kit): 12-channel, 500 Hz raw EEG plus
+  accelerometer/gyroscope, with LSL and BrainVision compatible tooling.
+- [Development Kit](https://www.neurable.com/dev-kit): partner/OEM program, access by request only.
+- [Neurable for Teams](https://www.neurable.com/partner/neurable-for-teams)
+- Mobile apps: [iOS](https://apps.apple.com/us/app/neurable/id6590635333) ·
+  [Android](https://play.google.com/store/apps/details?id=com.neurable)
+
+## Company
+
+- [Home](https://www.neurable.com/)
+- [About](https://www.neurable.com/about)
+- [Blog](https://www.neurable.com/blog)
+- [Newsroom](https://www.neurable.com/newsroom)
+- [Research](https://www.neurable.com/research)
+- [FAQs](https://www.neurable.com/faqs)
+- [Contact](https://www.neurable.com/contact) — hello@neurable.com
+- [Ethics](https://www.neurable.com/ethics)
+- [GitHub](https://github.com/neurable) (organization exists; zero public repositories)
+
+## Legal and privacy
+
+- [Terms of Service](https://www.neurable.com/terms-of-service)
+- [Privacy Policy](https://www.neurable.com/privacy-policy)
+- [Health Data Privacy](https://www.neurable.com/health-privacy)
+- [App Terms](https://www.neurable.com/app/tos) · [App Privacy](https://www.neurable.com/app/privacy)
+
+## What Neurable does not publish
+
+No `llms.txt`, no `security.txt`, no `/.well-known/api-catalog`, no A2A agent card, no MCP server,
+no AsyncAPI or webhook catalog (despite a `session:stream:create` scope), no SDKs or client
+libraries in any public package registry, no CLI, no Postman collection, no changelog, no status
+page, no deprecation or versioning policy, no SLA, and no compliance certifications or trust center.
+
+## Optional
+
+- [API Evangelist profile](https://apis.io/providers/neurable/)
+- [Repository artifacts](https://github.com/api-evangelist/neurable) — authentication, scopes,
+  conventions, error catalog, data model, lifecycle, conformance, domain security, agent skills.

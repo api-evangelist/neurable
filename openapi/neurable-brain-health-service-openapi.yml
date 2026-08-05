@@ -1,0 +1,13 @@
+# Harvested verbatim from https://report.neurable.com/openapi.json on 2026-08-04 (HTTP 200).
+# Faithful YAML rendering of openapi/_original/neurable-report-openapi.json — content unmodified.
+# Our enhancements (servers, security) are expressed separately in overlays/.
+openapi: 3.1.0
+info:
+  title: Brain Health Service
+  description: 'Brain Health Service manages calculating user statistics related to
+
+    Brain Health so that different reports can be flexibly and quickly generated.
+
+    '
+  version: arm64-c04afab
+paths: {}

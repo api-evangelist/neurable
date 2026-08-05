@@ -1,23 +1,176 @@
 aid: neurable
 name: Neurable
-description: 'Neurable is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Neurable is a Boston, Massachusetts neurotechnology company, founded in 2015 on University of Michigan
+  EEG signal-processing research, that builds non-invasive brain-computer interface (BCI) hardware and the
+  AI models that interpret the signal. Its consumer product is the MW75 Neuro — Master & Dynamic over-ear
+  headphones with dry conductive-fabric EEG electrodes that measure focus, fatigue and cognitive load — and
+  it also ships an MW75 Neuro Research Kit (12-channel, 500 Hz raw EEG plus accelerometer/gyroscope, exported
+  for LSL and BrainVision toolchains) and a partner Development Kit for hardware and software OEMs embedding
+  Neurable sensing into their own devices. Neurable publishes no public developer portal or API reference,
+  but its production backend services expose FastAPI-generated OpenAPI 3.1.0 descriptions at their host roots:
+  an Analytics Service handling the EEG recording lifecycle and headset feature licensing, a real-time data
+  processing pipe service that is also a full OpenID Connect authorization server, and a Brain Health Service.
+image: https://cdn.prod.website-files.com/65773cb2354a620eb230d1e4/657b30529e7a3d9845248e54_Neurable-December-Opengraph%20(2).jpg
 url: https://raw.githubusercontent.com/api-evangelist/neurable/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.21'
 created: '2026-08-04'
 modified: '2026-08-04'
 tags:
-- Company
-apis: []
+- neurotechnology
+- brain-computer-interface
+- eeg
+- neuroscience
+- wearables
+- biosignals
+- hardware
+- consumer-electronics
+- research-tools
+- cognitive-analytics
+- health-data
+- oauth
+- openid-connect
+apis:
+- name: Neurable Analytics Service
+  description: >-
+    Handles the full lifecycle of EEG analytics for Neurable customers and internal applications: a chunked
+    recording upload flow (start session, PUT chunks up to 10MB, finalize), recording download by processing
+    stage (raw, filter, feature, metric) as CSV or Parquet, participant creation, and an open endpoint that
+    issues signed, HMAC-sealed headset feature licenses against a device serial number and firmware UUID.
+  humanURL: https://analytics-service.neurable.com/docs
+  baseURL: https://analytics-service.neurable.com
+  tags:
+  - eeg
+  - brain-computer-interface
+  - cognitive-analytics
+  - recordings
+  - licensing
+  - research-tools
+  properties:
+  - type: OpenAPI
+    url: openapi/neurable-analytics-service-openapi.yml
+  - type: APIReference
+    url: https://analytics-service.neurable.com/docs
+  - type: Overlay
+    url: overlays/neurable-analytics-service-overlay.yaml
+  - type: ErrorCatalog
+    url: errors/neurable-problem-types.yml
+  - type: DataModel
+    url: data-model/neurable-data-model.yml
+- name: Neurable Pipe Service
+  description: >-
+    Real-time data processing service for analyzing EEG sensor data from Neurable hardware, which doubles as
+    the Neurable identity provider. It is a standards-conformant OpenID Connect authorization server —
+    authorization-code grant with mandatory PKCE (S256), refresh-token and client-credentials grants, RS256
+    ID tokens, a JWKS endpoint, a UserInfo endpoint, and an OIDC discovery document advertising the
+    demos:all:read, demos:prime:read, session:stream:create, openid and email scopes.
+  humanURL: https://pipe.neurable.com/docs
+  baseURL: https://pipe.neurable.com
+  tags:
+  - eeg
+  - biosignals
+  - real-time
+  - oauth
+  - openid-connect
+  - identity
+  properties:
+  - type: OpenAPI
+    url: openapi/neurable-pipe-service-openapi.yml
+  - type: APIReference
+    url: https://pipe.neurable.com/docs
+  - type: Overlay
+    url: overlays/neurable-pipe-service-overlay.yaml
+  - type: OpenIDConnect
+    url: https://pipe.neurable.com/.well-known/openid-configuration
+  - type: OAuthScopes
+    url: scopes/neurable-scopes.yml
+  - type: Authentication
+    url: authentication/neurable-authentication.yml
+- name: Neurable Brain Health Service
+  description: >-
+    Brain Health Service manages calculating user statistics related to Brain Health so that different
+    reports can be flexibly and quickly generated. The service publishes an OpenAPI 3.1.0 description at its
+    host root, but that description currently declares zero paths and zero schemas — the operations behind
+    the reporting surface are not described in the document it serves.
+  humanURL: https://report.neurable.com/docs
+  baseURL: https://report.neurable.com
+  tags:
+  - eeg
+  - brain-health
+  - reporting
+  - cognitive-analytics
+  properties:
+  - type: OpenAPI
+    url: openapi/neurable-brain-health-service-openapi.yml
+  - type: APIReference
+    url: https://report.neurable.com/docs
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/neurable-domain-security.yml
 - type: Website
-  url: https://forgeglobal.com/neurable_stock/
+  url: https://www.neurable.com/
+- type: About
+  url: https://www.neurable.com/about
+- type: Blog
+  url: https://www.neurable.com/blog
+- type: Support
+  url: https://www.neurable.com/contact
+- type: HelpCenter
+  url: https://www.neurable.com/faqs
+- type: GitHubOrganization
+  url: https://github.com/neurable
+- type: TermsOfService
+  url: https://www.neurable.com/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.neurable.com/privacy-policy
+- type: Authentication
+  url: authentication/neurable-authentication.yml
+- type: OAuthScopes
+  url: scopes/neurable-scopes.yml
+- type: Conventions
+  url: conventions/neurable-conventions.yml
+- type: Lifecycle
+  url: lifecycle/neurable-lifecycle.yml
+- type: Conformance
+  url: conformance/neurable-conformance.yml
+- type: ErrorCatalog
+  url: errors/neurable-problem-types.yml
+- type: DataModel
+  url: data-model/neurable-data-model.yml
+- type: WellKnown
+  url: well-known/neurable-well-known.yml
+- type: LLMsTxt
+  url: llms/neurable-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+x-enrichment:
+  date: '2026-08-04'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v1
+x-coverage:
+  state: covered
+  reason: null
+  detail: >-
+    Contract discovery beat the marketing site. Neurable publishes no developer portal, but three
+    production services serve FastAPI OpenAPI 3.1.0 documents anonymously at their host roots
+    (analytics-service, pipe, report), and the pipe service is a live OpenID Connect provider with
+    a public discovery document and JWKS. The hosts were found by certificate-transparency
+    enumeration after api./developer./docs.neurable.com all failed to resolve.
+  evidence:
+  - url: https://analytics-service.neurable.com/openapi.json
+    status: 200
+  - url: https://pipe.neurable.com/openapi.json
+    status: 200
+  - url: https://pipe.neurable.com/.well-known/openid-configuration
+    status: 200
+  - url: https://report.neurable.com/openapi.json
+    status: 200
+  checked: '2026-08-04'

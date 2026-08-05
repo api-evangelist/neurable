@@ -1,0 +1,135 @@
+generated: '2026-08-04'
+method: derived
+source: >-
+  Derived from the components.schemas $ref graph and id-reference fields in
+  openapi/_original/neurable-analytics-service-openapi.json (17 schemas) and
+  openapi/_original/neurable-pipe-openapi.json (8 schemas). Neurable publishes no object
+  reference, so no id-prefix grammar or entity documentation exists to enrich this with.
+docs: null
+notation: >-
+  Relationships use has_one / has_many / belongs_to with the reference field name in `via`;
+  direction is from the entity that owns the reference field. Where a relationship is implied by
+  the request/response flow rather than by an explicit field, it is marked implied: true.
+entities:
+- name: Device
+  schema: DeviceInfo
+  service: analytics
+  domain: hardware
+  identified_by: serial_number
+  description: >-
+    A uniquely identified Neurable device. The schema states "Additional Metadata can be loaded
+    using only this as an input", making DeviceInfo the lookup key for the hardware side of the
+    model.
+  fields:
+  - {name: platform, type: HardwarePlatform, required: true}
+  - {name: platform_model, type: string, required: false, nullable: true}
+  - {name: platform_version, type: integer, required: true}
+  - {name: serial_number, type: string, required: true}
+  - {name: firmware_version, type: string, required: true}
+- name: HardwarePlatform
+  schema: HardwarePlatform
+  service: analytics
+  domain: hardware
+  kind: enum
+  values: [MW75_Neuro, IRON, AMP1]
+  description: >-
+    The hardware platforms the Analytics Service supports. MW75_Neuro is the shipping consumer
+    product; IRON and AMP1 are not named anywhere on neurable.com.
+- name: HeadsetLicense
+  schema: HeadsetLicense
+  service: analytics
+  domain: licensing
+  identified_by: uuid
+  description: >-
+    A signed, time-limited grant unlocking a headset feature. Sealed with an HMAC and carrying
+    both an issue timestamp and an expiry_timestamp.
+  fields:
+  - {name: uuid, type: string, required: true}
+  - {name: feature_id, type: integer, required: true}
+  - {name: timestamp, type: integer, required: true}
+  - {name: hmac, type: string, required: true}
+  - {name: expiry_timestamp, type: integer, required: true}
+- name: Participant
+  schema: PostParticipantResponse
+  service: analytics
+  domain: research
+  identified_by: participant_id
+  description: >-
+    A research subject created under the calling user's account. The only participant operation is
+    creation (POST /participant) — there is no published read, list, update or delete.
+- name: Recording
+  schema: RecordingInfo
+  service: analytics
+  domain: recordings
+  identified_by: id
+  id_type: uuid
+  description: A single EEG capture session with a start/end time, an IANA timezone, and a category.
+  fields:
+  - {name: id, type: string, format: uuid, required: true}
+  - {name: started_at, type: string, format: date-time, required: true}
+  - {name: ended_at, type: string, format: date-time, required: true}
+  - {name: timezone, type: string, required: true}
+  - {name: category, type: RecordingCategory, required: false, default: general}
+- name: RecordingCategory
+  schema: RecordingCategory
+  service: analytics
+  domain: recordings
+  kind: enum
+  values: [general, cognitive_snapshot, rocket_game]
+  description: >-
+    What kind of recording this is. "rocket_game" and "cognitive_snapshot" are Neurable app
+    experiences; neither is documented publicly.
+- name: RecordingStage
+  schema: RecordingStage
+  service: analytics
+  domain: recordings
+  kind: enum
+  values: [raw, filter, feature, metric]
+  description: >-
+    The EEG processing pipeline expressed as data states. A recording is materialised at each
+    stage and is separately downloadable at any of them — this enum IS the processing model.
+- name: RecordingFileFormat
+  schema: RecordingFileFormat
+  service: analytics
+  domain: recordings
+  kind: enum
+  values: [csv, parquet]
+- name: UploadSession
+  schema: PostUploadRecordingStartResponse
+  service: analytics
+  domain: recordings
+  identified_by: upload_token
+  description: >-
+    A server-issued, opaque handle for one chunked upload. Created by POST
+    /recording/upload/start, written to by PUT /recording/upload/{upload_token}, and committed by
+    POST /recording/upload/finalize/{upload_token}, which returns the recording_id and file_size_b.
+- name: User
+  service: pipe
+  domain: identity
+  identified_by: sub
+  schema: GetUserInfoResponse
+  description: >-
+    The authenticated principal, as returned by the OIDC UserInfo endpoint and GET /me. Owns the
+    participants it creates ("Create a new participant for this user").
+relationships:
+- {from: UploadSession, to: Device, kind: belongs_to, via: device, note: 'PostUploadRecordingStartRequest.device'}
+- {from: UploadSession, to: Recording, kind: has_one, via: recording, note: 'PostUploadRecordingStartRequest.recording'}
+- {from: UploadSession, to: Participant, kind: belongs_to, via: participant_id, optional: true, note: 'Nullable — a recording may be unattributed.'}
+- {from: UploadSession, to: RecordingStage, kind: has_one, via: stage, note: 'Constrained at upload to raw | feature only, though the RecordingStage enum has four values.'}
+- {from: Recording, to: RecordingCategory, kind: has_one, via: category}
+- {from: Recording, to: RecordingStage, kind: has_many, via: stage, implied: true, note: 'A recording is downloadable at raw, filter, feature or metric via the required `stage` query parameter.'}
+- {from: Recording, to: RecordingFileFormat, kind: has_many, via: format, implied: true, note: 'Required `format` query parameter on download — csv or parquet.'}
+- {from: Device, to: HardwarePlatform, kind: has_one, via: platform}
+- {from: HeadsetLicense, to: Device, kind: belongs_to, via: serial_number, implied: true, note: 'CreateHeadsetLicenseRequest keys the license to serial_number + firmware_uuid.'}
+- {from: Participant, to: User, kind: belongs_to, via: owner, implied: true, note: 'POST /participant description: "Create a new participant for this user."'}
+asymmetries:
+- >-
+  RecordingStage declares four stages (raw, filter, feature, metric) but
+  PostUploadRecordingStartRequest.stage accepts only "raw" or "feature" — filter and metric are
+  download-only, i.e. server-produced. This is the clearest published signal of where Neurable's
+  processing happens.
+- >-
+  Every entity is write-only or read-once. There is no list, search, or read endpoint for
+  Recording, Participant, Device or HeadsetLicense — the published surface uploads data and
+  downloads it back by known id.
+render: null

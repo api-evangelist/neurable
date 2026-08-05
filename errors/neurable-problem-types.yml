@@ -1,0 +1,77 @@
+generated: '2026-08-04'
+method: derived
+format: fastapi-json
+source: >-
+  Derived from the 4xx responses declared in openapi/_original/neurable-analytics-service-openapi.json
+  and openapi/_original/neurable-pipe-openapi.json (both OpenAPI 3.1.0). Both services are
+  FastAPI-generated and do NOT use RFC 9457 application/problem+json. The only error status declared
+  anywhere in either document is 422; no 401, 403, 404, 409, 429 or 5xx response is described,
+  despite five of six Analytics Service operations being tagged "protected".
+rfc9457: false
+envelope:
+  media_type: application/json
+  default_shape: '{ "detail": [ { "loc": [string|integer, ...], "msg": string, "type": string } ] }'
+  note: >-
+    Standard FastAPI HTTPValidationError envelope wrapping a `detail` array of ValidationError
+    objects. The Analytics Service additionally returns a domain-error enum inside a 200 response
+    body (see application_level_errors below) rather than as an HTTP error status.
+validation_error_shape:
+  schema: HTTPValidationError
+  item_schema: ValidationError
+  fields:
+  - {name: loc, type: array<string|integer>, required: true, description: 'Path to the offending field (e.g. body/serial_number).'}
+  - {name: msg, type: string, required: true, description: Human-readable validation message.}
+  - {name: type, type: string, required: true, description: Machine error type.}
+problems:
+- status: 422
+  title: Unprocessable Entity (Validation Error)
+  media_type: application/json
+  schema: HTTPValidationError
+  meaning: >-
+    Request failed FastAPI request validation — a required parameter or body field is missing,
+    malformed, or of the wrong type.
+  remediation: Inspect detail[].loc for the offending field and detail[].msg for the reason; correct and retry.
+  declared_on:
+  - create_headset_license_open_headset_license_post
+  - download_recording_recording_download__recording_id__get
+  - upload_recording_start_recording_upload_start_post
+  - upload_recording_chunk_recording_upload__upload_token__put
+  - upload_recording_finalize_recording_upload_finalize__upload_token__post
+  - get_oauth_authorize_oauth_authorize_get
+  - post_oauth_token_oauth_token_post
+  source: openapi/_original/neurable-analytics-service-openapi.json, openapi/_original/neurable-pipe-openapi.json
+application_level_errors:
+  note: >-
+    The headset licensing flow does not signal failure with an HTTP status. It returns HTTP 200
+    with CreateHeadsetLicenseResponse.success = false and a CreateHeadsetLicenseError enum in
+    `detail`, with `license` null. Clients must branch on the body, not the status code.
+  envelope_schema: CreateHeadsetLicenseResponse
+  discriminator_field: detail
+  codes:
+  - code: SERIAL_NUMBER_UNAUTHORIZED
+    operation: create_headset_license_open_headset_license_post
+    meaning: The submitted device serial number is not authorized to receive a license for the requested feature.
+    action: Verify the serial number belongs to an eligible MW75_Neuro unit; contact Neurable if it should be eligible.
+  - code: SERIAL_NUMBER_ALREADY_ISSUED
+    operation: create_headset_license_open_headset_license_post
+    meaning: A license has already been issued for this serial number.
+    action: Reuse the previously issued license; do not re-request. Check expiry_timestamp on the held license.
+undocumented_statuses:
+  note: >-
+    Observed live during probing but not declared in any spec — recorded so integrators are not
+    surprised by them.
+  observed:
+  - status: 404
+    body: '{"detail":"Not Found"}'
+    hosts: [analytics-service.neurable.com, pipe.neurable.com, report.neurable.com]
+    observed: '2026-08-04'
+  - status: 403
+    body: '{"message":"Missing Authentication Token"}'
+    host: notify.neurable.com
+    note: AWS API Gateway default rejection; this host publishes no OpenAPI.
+    observed: '2026-08-04'
+gaps:
+- No 401 or 403 response is declared on any "protected" operation.
+- No 429 / rate-limit error is declared or documented.
+- No RFC 9457 problem+json media type is used.
+- No error-code reference page is published anywhere on neurable.com.

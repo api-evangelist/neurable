@@ -1,0 +1,59 @@
+generated: '2026-08-04'
+method: probed
+source: https://pipe.neurable.com/.well-known/openid-configuration (HTTP 200, scopes_supported)
+docs: null
+authorization_server: https://pipe.neurable.com
+notes: >-
+  Neurable publishes no scope reference page. These five scopes are the verbatim
+  `scopes_supported` array from the live OpenID Connect Discovery document served by the pipe
+  service. Descriptions below are read from the scope grammar and the service's own OpenAPI
+  description; Neurable does not document them, so the semantics are marked inferred where they
+  are not literally stated. The `scope` query parameter is REQUIRED on /oauth/authorize.
+grammar:
+  pattern: '<resource>:<qualifier>:<action>'
+  note: >-
+    Three of the five scopes follow a colon-delimited resource:qualifier:action grammar; the
+    remaining two (openid, email) are the standard OIDC scopes.
+scopes:
+- scope: openid
+  standard: oidc-core
+  description: Standard OpenID Connect scope; requests an ID token from the pipe issuer.
+  inferred: false
+- scope: email
+  standard: oidc-core
+  description: >-
+    Standard OpenID Connect scope; releases the `email` claim, which the discovery document
+    lists in claims_supported and which the /oidc/userinfo response carries.
+  inferred: false
+- scope: demos:all:read
+  resource: demos
+  qualifier: all
+  action: read
+  description: >-
+    Read access to the full set of Neurable demo experiences. A demos.neurable.com host is live
+    and serves a single-page application, which is the surface this scope appears to govern.
+  inferred: true
+- scope: demos:prime:read
+  resource: demos
+  qualifier: prime
+  action: read
+  description: >-
+    Read access to a restricted "prime" subset of the demo experiences — a narrower grant than
+    demos:all:read.
+  inferred: true
+- scope: session:stream:create
+  resource: session
+  qualifier: stream
+  action: create
+  description: >-
+    Permission to open a streaming session against the real-time pipe service, which the service
+    describes as "real-time data processing service for analyzing EEG sensor data from Neurable
+    hardware". This is the only write/create scope advertised.
+  inferred: true
+coverage_gap: >-
+  No scope is referenced anywhere in the three published OpenAPI documents — none of them declares
+  a securitySchemes block, so no operation maps to a scope in the contract. The mapping between
+  these scopes and the Analytics Service's "protected" operations is not published.
+cross_links:
+  authentication: authentication/neurable-authentication.yml
+  well_known: well-known/neurable-well-known.yml

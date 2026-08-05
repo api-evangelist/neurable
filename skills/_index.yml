@@ -1,0 +1,62 @@
+generated: '2026-08-04'
+method: generated
+source: >-
+  Generated from openapi/_original/neurable-analytics-service-openapi.json,
+  openapi/_original/neurable-pipe-openapi.json and the live OIDC discovery document at
+  https://pipe.neurable.com/.well-known/openid-configuration. Every operationId referenced by every
+  skill was verified against the served spec. Neurable publishes no skills, AGENTS.md or agent
+  instructions of its own (probed 2026-08-04).
+provider: Neurable
+caveat: >-
+  Neurable publishes no developer documentation of any kind, and none of its three OpenAPI documents
+  declares a securitySchemes block. These skills therefore describe the contract accurately but must
+  flag, rather than resolve, the auth ambiguity — an agent following them still has to obtain a
+  credential from Neurable directly.
+skills:
+- name: neurable-authenticate-oidc
+  file: skills/neurable-authenticate-oidc.md
+  api: Neurable Pipe Service
+  summary: >-
+    Get an access token from the Neurable OIDC provider — authorization code with mandatory PKCE
+    (S256) and a required non-standard `audience` parameter, or client credentials. Validate ID
+    tokens against the published JWKS.
+  operations:
+  - get_oauth_authorize_oauth_authorize_get
+  - post_oauth_token_oauth_token_post
+  - get_well_known_openid_configuration__well_known_openid_configuration_get
+  - get_well_known_jwks__well_known_jwks_json_get
+  - get_userinfo_oidc_userinfo_get
+  - get_me_me_get
+- name: neurable-upload-eeg-recording
+  file: skills/neurable-upload-eeg-recording.md
+  api: Neurable Analytics Service
+  summary: >-
+    Three-step chunked upload of an EEG recording — open a session for an upload_token, PUT ordered
+    chunks of at most 10MB indexed from 0, finalize to reassemble and receive a recording_id.
+  operations:
+  - upload_recording_start_recording_upload_start_post
+  - upload_recording_chunk_recording_upload__upload_token__put
+  - upload_recording_finalize_recording_upload_finalize__upload_token__post
+- name: neurable-download-eeg-recording
+  file: skills/neurable-download-eeg-recording.md
+  api: Neurable Analytics Service
+  summary: >-
+    Download a stored recording at a named EEG processing stage (raw, filter, feature, metric) as
+    CSV or Parquet. Both stage and format are required with no default.
+  operations:
+  - download_recording_recording_download__recording_id__get
+- name: neurable-issue-headset-license
+  file: skills/neurable-issue-headset-license.md
+  api: Neurable Analytics Service
+  summary: >-
+    Issue a signed, HMAC-sealed, expiring feature license for an MW75 Neuro serial number. Failures
+    return HTTP 200 with success:false — branch on the body, not the status code.
+  operations:
+  - create_headset_license_open_headset_license_post
+not_covered:
+- operation: create_participant_participant_post
+  reason: >-
+    Single-call operation with no request body and no parameters; a skill would add nothing over the
+    spec. Covered as a prerequisite inside neurable-upload-eeg-recording.
+- api: Neurable Brain Health Service
+  reason: Its published OpenAPI declares zero paths — there is nothing to ground a skill in.

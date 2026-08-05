@@ -1,0 +1,75 @@
+generated: '2026-08-04'
+method: probed
+source: live probes of /.well-known/ across every Neurable host discovered via certificate transparency
+notes: >-
+  Neurable's marketing site (Webflow) answers every /.well-known/* path with a 404 HTML page
+  reading "Invalid .well-known request". The only /.well-known documents Neurable actually
+  serves are the OIDC discovery document and JWKS on the pipe service, which are declared
+  operations in that service's own OpenAPI.
+hosts:
+- host: https://pipe.neurable.com
+  documents:
+  - path: /.well-known/openid-configuration
+    spec: OpenID Connect Discovery 1.0
+    status: 200
+    content_type: application/json
+    file: well-known/neurable-pipe-openid-configuration.json
+  - path: /.well-known/jwks.json
+    spec: RFC 7517 (JWK Set)
+    status: 200
+    content_type: application/json
+    file: well-known/neurable-pipe-jwks.json
+    keys: 1
+    key_summary: 'RSA, alg RS256, use sig, kid hXAk-wC5HGI9XBU6M3oLZlysD9iuxsSrS3GSCiQmX88'
+  misses:
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://analytics-service.neurable.com
+  documents: []
+  misses:
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://report.neurable.com
+  documents: []
+  misses:
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://www.neurable.com
+  documents: []
+  misses:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/oauth-protected-resource, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 404}
+- host: https://app.neurable.com
+  documents: []
+  misses:
+  - {path: /.well-known/agent-card.json, status: 403}
+absent:
+  security_txt: true
+  api_catalog: true
+  agent_card: true
+  ai_plugin: true
+  llms_txt: true
+cross_links:
+  authentication: authentication/neurable-authentication.yml
+  scopes: scopes/neurable-scopes.yml
+  conformance: conformance/neurable-conformance.yml

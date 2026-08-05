@@ -1,0 +1,70 @@
+generated: '2026-08-04'
+method: probed
+source: >-
+  Live probes of the Neurable service hosts + https://www.neurable.com sitemap.xml, plus
+  info.version and GET /version on the published OpenAPI documents. No versioning, deprecation,
+  SLA, status or changelog page exists on neurable.com.
+versioning:
+  scheme: unversioned-path
+  api_version_in_path: false
+  api_version_header: null
+  service_versions:
+  - service: Neurable Pipe Service
+    host: pipe.neurable.com
+    info_version: 0.0.24
+    scheme: semver
+    endpoint: GET /version -> {"version":"0.0.24"}
+    observed: '2026-08-04'
+  - service: Neurable Analytics Service
+    host: analytics-service.neurable.com
+    info_version: arm64-3a9ffd8
+    scheme: build-identifier
+    note: Architecture + git short SHA; not a consumer-facing version.
+    observed: '2026-08-04'
+  - service: Neurable Brain Health Service
+    host: report.neurable.com
+    info_version: arm64-c04afab
+    scheme: build-identifier
+    observed: '2026-08-04'
+  notes: >-
+    The three services do not share a versioning scheme, and none of the published paths carries a
+    version segment. Consumers have no stable contract version to pin to.
+environments:
+  note: >-
+    Neurable does not publish a sandbox or test environment. Non-production hostnames for the same
+    services are nevertheless publicly resolvable and serve their OpenAPI documents anonymously —
+    recorded here as an observation, not as an offered sandbox.
+  observed:
+  - {host: staging.pipe.neurable.com, openapi_status: 200, info_version: 0.0.34}
+  - {host: staging.analytics-service.neurable.com, openapi_status: 200}
+  - {host: development.analytics-service.neurable.com, openapi_status: 200}
+  - {host: staging.report.neurable.com, openapi_status: 200}
+  - {host: development.report.neurable.com, openapi_status: 200}
+  divergence: >-
+    staging.pipe.neurable.com (0.0.34) declares two operations that production (0.0.24) does not:
+    POST /api/v1/batch/{device_type} and POST /api/v1/events. Production's contract is behind
+    staging's.
+changelog:
+  published: false
+  url: null
+  probed:
+  - {url: 'https://www.neurable.com/blog', status: 200, note: 'Company blog — product/marketing posts, not an API changelog.'}
+  - {url: 'https://www.neurable.com/newsroom', status: 200, note: Press releases.}
+deprecation:
+  policy_documented: false
+  sunset_header: false
+  rfc8594: false
+  deprecated_operations: []
+  note: No deprecation or sunset policy is published, and no operation is marked deprecated in any spec.
+status_page:
+  published: false
+  url: null
+  probed:
+  - {url: 'https://status.neurable.com/', status: 'NXDOMAIN'}
+sla:
+  documented: false
+support:
+  email: hello@neurable.com
+  github_org_email: support@neurable.com
+  contact_form: https://www.neurable.com/contact
+  faqs: https://www.neurable.com/faqs

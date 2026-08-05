@@ -1,0 +1,104 @@
+generated: '2026-08-04'
+method: probed
+source: >-
+  Live probes of https://pipe.neurable.com/.well-known/openid-configuration,
+  /.well-known/jwks.json, the three published OpenAPI documents, and /.well-known/* on every
+  Neurable host. No compliance or certification claims are published on neurable.com.
+standards:
+- id: openapi
+  conforms: true
+  version: 3.1.0
+  evidence: >-
+    Three services serve valid OpenAPI 3.1.0 documents at their host roots —
+    analytics-service.neurable.com/openapi.json (6 operations, 17 schemas),
+    pipe.neurable.com/openapi.json (7 operations, 8 schemas), report.neurable.com/openapi.json
+    (0 operations, 0 schemas). All three are FastAPI-generated and are not linked from any
+    published documentation.
+- id: oidc-discovery
+  conforms: true
+  evidence: >-
+    https://pipe.neurable.com/.well-known/openid-configuration returns 200 with a complete
+    OpenID Connect Discovery 1.0 metadata document (issuer, authorization_endpoint,
+    token_endpoint, userinfo_endpoint, jwks_uri, scopes_supported, response_types_supported,
+    subject_types_supported, id_token_signing_alg_values_supported, claims_supported).
+- id: oidc
+  conforms: true
+  evidence: >-
+    RS256 ID tokens, public subject type, standard claims (iss/sub/aud/exp/iat/nonce/email), and a
+    declared GET /oidc/userinfo operation.
+- id: oauth2
+  conforms: true
+  evidence: >-
+    Authorization-code, refresh-token and client-credentials grants advertised; /oauth/authorize
+    and /oauth/token declared in the pipe service OpenAPI; client_secret_post and public ("none")
+    client authentication supported.
+- id: oauth2-pkce
+  conforms: true
+  rfc: RFC 7636
+  evidence: >-
+    code_challenge_methods_supported = ["S256"], and both code_challenge and
+    code_challenge_method are REQUIRED query parameters on GET /oauth/authorize — PKCE is
+    mandatory, not optional.
+- id: rfc7517-jwks
+  conforms: true
+  evidence: >-
+    https://pipe.neurable.com/.well-known/jwks.json returns 200 with a single RSA signing key
+    (alg RS256, use sig, kid hXAk-wC5HGI9XBU6M3oLZlysD9iuxsSrS3GSCiQmX88).
+- id: rfc8707-resource-indicators
+  conforms: partial
+  evidence: >-
+    GET /oauth/authorize requires an `audience` query parameter, which is resource-targeting in
+    the spirit of RFC 8707, but the RFC's own `resource` parameter name is not used and the
+    behaviour is not documented.
+- id: rfc8414-authorization-server-metadata
+  conforms: false
+  evidence: /.well-known/oauth-authorization-server returns 404 on pipe.neurable.com (OIDC discovery is served instead).
+- id: rfc9728-protected-resource-metadata
+  conforms: false
+  evidence: /.well-known/oauth-protected-resource returns 404 on every Neurable host.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors are FastAPI application/json HTTPValidationError bodies; application/problem+json is not used.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on www.neurable.com and all three API hosts.
+- id: rfc8615-api-catalog
+  conforms: false
+  evidence: /.well-known/api-catalog returns 404 on every host.
+- id: llms-txt
+  conforms: false
+  evidence: /llms.txt returns 404 on www.neurable.com and all three API hosts.
+- id: mcp
+  conforms: false
+  evidence: No hosted MCP server found; /mcp and /sse return 404 on every Neurable host.
+- id: a2a
+  conforms: false
+  evidence: /.well-known/agent-card.json and /.well-known/agent.json return 404 on every host (403 on app.neurable.com).
+- id: asyncapi
+  conforms: false
+  evidence: No event, streaming or webhook specification is published, despite a session:stream:create OAuth scope.
+- id: graphql
+  conforms: false
+  evidence: No /graphql surface found on any host.
+- id: dnssec
+  conforms: false
+  evidence: 'neurable.com has no DNSKEY record (probed 2026-08-04). See security/neurable-domain-security.yml.'
+- id: dmarc
+  conforms: partial
+  evidence: 'neurable.com publishes a DMARC record with policy p=none — monitoring only, no enforcement.'
+- id: hsts
+  conforms: partial
+  evidence: >-
+    www.neurable.com sends Strict-Transport-Security with max-age=31536000; neither
+    analytics-service.neurable.com nor pipe.neurable.com sends an HSTS header.
+compliance_program:
+  published: false
+  certifications: []
+  trust_center: null
+  note: >-
+    No SOC 2, ISO 27001, HIPAA, GDPR or FedRAMP claim is published on neurable.com, and no trust
+    center exists (trust.neurable.com and security.neurable.com do not resolve; /trust and
+    /security 404). Neurable does publish a consumer-facing health-data privacy policy
+    (https://www.neurable.com/health-privacy) and an ethics statement
+    (https://www.neurable.com/ethics), but neither names a certification or audit. This is a
+    notable gap for a company whose product records neurological data.

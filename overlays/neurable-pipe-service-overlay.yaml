@@ -1,0 +1,89 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Neurable Pipe Service
+  version: 1.0.0
+  x-generated: '2026-08-04'
+  x-method: generated
+  x-source: openapi/neurable-pipe-service-openapi.yml
+  x-note: >-
+    Captures API Evangelist's enhancements over the verbatim spec Neurable serves at
+    https://pipe.neurable.com/openapi.json. The original is never mutated. Everything added below
+    is read off the live OpenID Connect discovery document this same service publishes at
+    /.well-known/openid-configuration (HTTP 200, 2026-08-04) — nothing is invented.
+extends: openapi/neurable-pipe-service-openapi.yml
+actions:
+- target: $
+  description: Add the server the document is actually served from; the published spec declares no servers[].
+  update:
+    servers:
+    - url: https://pipe.neurable.com
+      description: Production (observed 2026-08-04, info.version 0.0.24)
+- target: $.info
+  description: Add contact and provenance metadata absent from the served document.
+  update:
+    contact:
+      name: Neurable
+      email: hello@neurable.com
+      url: https://www.neurable.com/contact
+    x-api-evangelist:
+      profile: https://apis.io/providers/neurable/
+      harvested_from: https://pipe.neurable.com/openapi.json
+      harvested_on: '2026-08-04'
+      documentation_published_by_provider: false
+- target: $.components
+  description: >-
+    Declare the OAuth 2.0 / OIDC schemes this service itself implements. The document describes
+    /oauth/authorize, /oauth/token and /oidc/userinfo as ordinary operations but declares no
+    securitySchemes, so the fact that this IS an authorization server is invisible to tooling.
+  update:
+    securitySchemes:
+      neurableOIDC:
+        type: openIdConnect
+        openIdConnectUrl: https://pipe.neurable.com/.well-known/openid-configuration
+        description: Read from the live discovery document served by this same host.
+      neurableOAuth2:
+        type: oauth2
+        description: >-
+          Read from the live discovery document. PKCE (S256) is mandatory — code_challenge and
+          code_challenge_method are REQUIRED parameters on /oauth/authorize — and an `audience`
+          parameter is also required.
+        flows:
+          authorizationCode:
+            authorizationUrl: https://pipe.neurable.com/oauth/authorize
+            tokenUrl: https://pipe.neurable.com/oauth/token
+            refreshUrl: https://pipe.neurable.com/oauth/token
+            scopes:
+              openid: Standard OpenID Connect scope; request an ID token.
+              email: Release the email claim.
+              demos:all:read: Read access to all Neurable demo experiences.
+              demos:prime:read: Read access to the prime subset of demo experiences.
+              session:stream:create: Open a real-time EEG streaming session.
+          clientCredentials:
+            tokenUrl: https://pipe.neurable.com/oauth/token
+            scopes:
+              demos:all:read: Read access to all Neurable demo experiences.
+              demos:prime:read: Read access to the prime subset of demo experiences.
+              session:stream:create: Open a real-time EEG streaming session.
+- target: $.paths['/me'].get
+  description: Mark the operation that requires an access token.
+  update:
+    security:
+    - neurableOIDC: []
+    x-inferred-security: >-
+      Not declared by Neurable. GET /me returns GetMeResponse for the calling principal, so it
+      cannot be anonymous.
+- target: $.paths['/oidc/userinfo'].get
+  description: Mark the UserInfo endpoint's token requirement, per OpenID Connect Core 5.3.
+  update:
+    security:
+    - neurableOAuth2: [openid]
+    x-inferred-security: Required by OpenID Connect Core §5.3; not declared in the served document.
+- target: $.tags
+  description: Describe the three tag groups the operations already carry.
+  update:
+  - name: OAuth
+    description: OAuth 2.0 authorization-server endpoints (authorize, token, JWKS).
+  - name: OIDC
+    description: OpenID Connect discovery and UserInfo endpoints.
+  - name: Core
+    description: Service-level endpoints (version, current principal).
