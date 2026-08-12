@@ -33,77 +33,134 @@ tags:
 - oauth
 - openid-connect
 apis:
-- name: Neurable Analytics Service
-  description: >-
-    Handles the full lifecycle of EEG analytics for Neurable customers and internal applications: a chunked
-    recording upload flow (start session, PUT chunks up to 10MB, finalize), recording download by processing
-    stage (raw, filter, feature, metric) as CSV or Parquet, participant creation, and an open endpoint that
-    issues signed, HMAC-sealed headset feature licenses against a device serial number and firmware UUID.
+- aid: neurable:neurable-core-api
+  name: Neurable Core API
+  description: The Core API from Neurable — 2 operation(s) for core.
   humanURL: https://analytics-service.neurable.com/docs
   baseURL: https://analytics-service.neurable.com
   tags:
-  - eeg
-  - brain-computer-interface
-  - cognitive-analytics
-  - recordings
-  - licensing
-  - research-tools
+  - Core
   properties:
   - type: OpenAPI
-    url: openapi/neurable-analytics-service-openapi.yml
+    url: openapi/neurable-core-api-openapi.yml
   - type: APIReference
     url: https://analytics-service.neurable.com/docs
-  - type: Overlay
-    url: overlays/neurable-analytics-service-overlay.yaml
   - type: ErrorCatalog
     url: errors/neurable-problem-types.yml
   - type: DataModel
     url: data-model/neurable-data-model.yml
-- name: Neurable Pipe Service
-  description: >-
-    Real-time data processing service for analyzing EEG sensor data from Neurable hardware, which doubles as
-    the Neurable identity provider. It is a standards-conformant OpenID Connect authorization server —
-    authorization-code grant with mandatory PKCE (S256), refresh-token and client-credentials grants, RS256
-    ID tokens, a JWKS endpoint, a UserInfo endpoint, and an OIDC discovery document advertising the
-    demos:all:read, demos:prime:read, session:stream:create, openid and email scopes.
-  humanURL: https://pipe.neurable.com/docs
-  baseURL: https://pipe.neurable.com
-  tags:
-  - eeg
-  - biosignals
-  - real-time
-  - oauth
-  - openid-connect
-  - identity
-  properties:
-  - type: OpenAPI
-    url: openapi/neurable-pipe-service-openapi.yml
   - type: APIReference
     url: https://pipe.neurable.com/docs
-  - type: Overlay
-    url: overlays/neurable-pipe-service-overlay.yaml
   - type: OpenIDConnect
     url: https://pipe.neurable.com/.well-known/openid-configuration
   - type: OAuthScopes
     url: scopes/neurable-scopes.yml
   - type: Authentication
     url: authentication/neurable-authentication.yml
-- name: Neurable Brain Health Service
-  description: >-
-    Brain Health Service manages calculating user statistics related to Brain Health so that different
-    reports can be flexibly and quickly generated. The service publishes an OpenAPI 3.1.0 description at its
-    host root, but that description currently declares zero paths and zero schemas — the operations behind
-    the reporting surface are not described in the document it serves.
-  humanURL: https://report.neurable.com/docs
-  baseURL: https://report.neurable.com
+  - type: APIReference
+    url: https://report.neurable.com/docs
+- aid: neurable:neurable-oauth-api
+  name: Neurable O Auth API
+  description: The OAuth API from Neurable — 3 operation(s) for oauth.
+  humanURL: https://analytics-service.neurable.com/docs
+  baseURL: https://analytics-service.neurable.com
   tags:
-  - eeg
-  - brain-health
-  - reporting
-  - cognitive-analytics
+  - OAuth
   properties:
   - type: OpenAPI
-    url: openapi/neurable-brain-health-service-openapi.yml
+    url: openapi/neurable-oauth-api-openapi.yml
+  - type: APIReference
+    url: https://analytics-service.neurable.com/docs
+  - type: ErrorCatalog
+    url: errors/neurable-problem-types.yml
+  - type: DataModel
+    url: data-model/neurable-data-model.yml
+  - type: APIReference
+    url: https://pipe.neurable.com/docs
+  - type: OpenIDConnect
+    url: https://pipe.neurable.com/.well-known/openid-configuration
+  - type: OAuthScopes
+    url: scopes/neurable-scopes.yml
+  - type: Authentication
+    url: authentication/neurable-authentication.yml
+  - type: APIReference
+    url: https://report.neurable.com/docs
+- aid: neurable:neurable-oidc-api
+  name: Neurable OIDC API
+  description: The OIDC API from Neurable — 2 operation(s) for oidc.
+  humanURL: https://analytics-service.neurable.com/docs
+  baseURL: https://analytics-service.neurable.com
+  tags:
+  - OIDC
+  properties:
+  - type: OpenAPI
+    url: openapi/neurable-oidc-api-openapi.yml
+  - type: APIReference
+    url: https://analytics-service.neurable.com/docs
+  - type: ErrorCatalog
+    url: errors/neurable-problem-types.yml
+  - type: DataModel
+    url: data-model/neurable-data-model.yml
+  - type: APIReference
+    url: https://pipe.neurable.com/docs
+  - type: OpenIDConnect
+    url: https://pipe.neurable.com/.well-known/openid-configuration
+  - type: OAuthScopes
+    url: scopes/neurable-scopes.yml
+  - type: Authentication
+    url: authentication/neurable-authentication.yml
+  - type: APIReference
+    url: https://report.neurable.com/docs
+- aid: neurable:neurable-open-api
+  name: Neurable Open API
+  description: The open API from Neurable — 1 operation(s) for open.
+  humanURL: https://analytics-service.neurable.com/docs
+  baseURL: https://analytics-service.neurable.com
+  tags:
+  - open
+  properties:
+  - type: OpenAPI
+    url: openapi/neurable-open-api-openapi.yml
+  - type: APIReference
+    url: https://analytics-service.neurable.com/docs
+  - type: ErrorCatalog
+    url: errors/neurable-problem-types.yml
+  - type: DataModel
+    url: data-model/neurable-data-model.yml
+  - type: APIReference
+    url: https://pipe.neurable.com/docs
+  - type: OpenIDConnect
+    url: https://pipe.neurable.com/.well-known/openid-configuration
+  - type: OAuthScopes
+    url: scopes/neurable-scopes.yml
+  - type: Authentication
+    url: authentication/neurable-authentication.yml
+  - type: APIReference
+    url: https://report.neurable.com/docs
+- aid: neurable:neurable-protected-api
+  name: Neurable Protected API
+  description: The protected API from Neurable — 5 operation(s) for protected.
+  humanURL: https://analytics-service.neurable.com/docs
+  baseURL: https://analytics-service.neurable.com
+  tags:
+  - protected
+  properties:
+  - type: OpenAPI
+    url: openapi/neurable-protected-api-openapi.yml
+  - type: APIReference
+    url: https://analytics-service.neurable.com/docs
+  - type: ErrorCatalog
+    url: errors/neurable-problem-types.yml
+  - type: DataModel
+    url: data-model/neurable-data-model.yml
+  - type: APIReference
+    url: https://pipe.neurable.com/docs
+  - type: OpenIDConnect
+    url: https://pipe.neurable.com/.well-known/openid-configuration
+  - type: OAuthScopes
+    url: scopes/neurable-scopes.yml
+  - type: Authentication
+    url: authentication/neurable-authentication.yml
   - type: APIReference
     url: https://report.neurable.com/docs
 maintainers:
@@ -112,6 +169,10 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: MCPServer
+  url: mcp/neurable-mcp.yml
+- type: Overlay
+  url: overlays/neurable-analytics-service-overlay.yaml
 - type: DomainSecurity
   url: security/neurable-domain-security.yml
 - type: Website
