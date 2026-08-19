@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "neu-pipe-service Core API",
+    "version": "0.0.24"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Core",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Version",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/version"
+          },
+          "docs": "Retrieve the APIs version."
+        },
+        {
+          "info": {
+            "name": "Get Me",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/me"
+          },
+          "docs": "Get information about the currently authenticated user."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

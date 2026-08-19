@@ -1,0 +1,172 @@
+{
+  "item": [
+    {
+      "id": "d301e240-b321-4e2e-b1ff-566832157305",
+      "name": "open",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "021a0d52-3c70-47f6-b171-a7e18e33a05b",
+          "name": "Create Headset License",
+          "request": {
+            "name": "Create Headset License",
+            "description": {
+              "content": "Request a signed license to unlock specified headset features.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "open",
+                "headset",
+                "license"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serial_number\": \"<string>\",\n  \"firmware_uuid\": \"<string>\",\n  \"feature_id\": \"<integer>\",\n  \"platform\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3c21a67c-33c7-4f17-9be8-a5bf7a17af8d",
+              "name": "Successful Response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "open",
+                    "headset",
+                    "license"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"serial_number\": \"<string>\",\n  \"firmware_uuid\": \"<string>\",\n  \"feature_id\": \"<integer>\",\n  \"platform\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"detail\": \"SERIAL_NUMBER_ALREADY_ISSUED\",\n  \"license\": {\n    \"uuid\": \"string\",\n    \"feature_id\": 9403,\n    \"timestamp\": 340,\n    \"hmac\": \"string\",\n    \"expiry_timestamp\": 445\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "490fddd4-5d67-4638-8cec-3fe68d7bd2b0",
+              "name": "Validation Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "open",
+                    "headset",
+                    "license"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"serial_number\": \"<string>\",\n  \"firmware_uuid\": \"<string>\",\n  \"feature_id\": \"<integer>\",\n  \"platform\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "9b5ee41c-64cb-41c5-aa7b-965474317f19",
+    "name": "Analytics Service Open API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Handles the full lifecycle of EEG analytics for both customers and internal applications.",
+      "type": "text/plain"
+    }
+  }
+}

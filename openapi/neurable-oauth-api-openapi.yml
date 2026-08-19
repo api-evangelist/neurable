@@ -1,0 +1,242 @@
+openapi: 3.2.0
+info:
+  title: neu-pipe-service O Auth API
+  description: Real-time data processing service for analyzing EEG sensor data from Neurable hardware.
+  version: 0.0.24
+tags:
+- name: OAuth
+paths:
+  /oauth/authorize:
+    get:
+      tags:
+      - OAuth
+      summary: Get Oauth Authorize
+      description: Initiate the authorization code grant flow (PKCE required).
+      operationId: get_oauth_authorize_oauth_authorize_get
+      parameters:
+      - name: client_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Client Id
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Redirect Uri
+      - name: response_type
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Response Type
+      - name: code_challenge
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Code Challenge
+      - name: code_challenge_method
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Code Challenge Method
+      - name: scope
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Scope
+      - name: audience
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Audience
+      - name: state
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: State
+      - name: nonce
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Nonce
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /oauth/token:
+    post:
+      tags:
+      - OAuth
+      summary: Post Oauth Token
+      description: Exchange an authorization code for an access token.
+      operationId: post_oauth_token_oauth_token_post
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Body_post_oauth_token_oauth_token_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostOAuthTokenResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /.well-known/jwks.json:
+    get:
+      tags:
+      - OAuth
+      summary: Get Well Known Jwks
+      description: Retieve public signing key for JWTs issued by this API.
+      operationId: get_well_known_jwks__well_known_jwks_json_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Body_post_oauth_token_oauth_token_post:
+      properties:
+        grant_type:
+          type: string
+          title: Grant Type
+        client_id:
+          type: string
+          title: Client Id
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code
+        redirect_uri:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Redirect Uri
+        code_verifier:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Code Verifier
+        refresh_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Refresh Token
+        client_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Client Secret
+        scope:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scope
+      type: object
+      required:
+      - grant_type
+      - client_id
+      title: Body_post_oauth_token_oauth_token_post
+    PostOAuthTokenResponse:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        token_type:
+          type: string
+          const: Bearer
+          title: Token Type
+          default: Bearer
+        expires_in:
+          type: integer
+          title: Expires In
+        refresh_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Refresh Token
+        id_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id Token
+        scope:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scope
+      type: object
+      required:
+      - access_token
+      - expires_in
+      title: PostOAuthTokenResponse
+      description: 'Successful response from the OAuth token endpoint.
+
+
+        Compliant with [RFC 6749 §5.1](https://datatracker.ietf.org/doc/html/rfc6749#section-5.1)'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

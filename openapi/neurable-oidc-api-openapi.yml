@@ -1,0 +1,142 @@
+openapi: 3.2.0
+info:
+  title: neu-pipe-service OIDC API
+  description: Real-time data processing service for analyzing EEG sensor data from Neurable hardware.
+  version: 0.0.24
+tags:
+- name: OIDC
+paths:
+  /.well-known/openid-configuration:
+    get:
+      tags:
+      - OIDC
+      summary: Get Well Known Openid Configuration
+      description: OpenID Connect Discovery metadata for this authorization server.
+      operationId: get_well_known_openid_configuration__well_known_openid_configuration_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenIDProviderMetadata'
+  /oidc/userinfo:
+    get:
+      tags:
+      - OIDC
+      summary: Get Userinfo
+      description: OpenID Connect UserInfo endpoint.
+      operationId: get_userinfo_oidc_userinfo_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserInfoResponse'
+components:
+  schemas:
+    GetUserInfoResponse:
+      properties:
+        sub:
+          type: string
+          title: Sub
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+      type: object
+      required:
+      - sub
+      title: GetUserInfoResponse
+      description: 'OpenID Connect UserInfo response.
+
+
+        See: https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse'
+    OpenIDProviderMetadata:
+      properties:
+        issuer:
+          type: string
+          title: Issuer
+        authorization_endpoint:
+          type: string
+          title: Authorization Endpoint
+        token_endpoint:
+          type: string
+          title: Token Endpoint
+        userinfo_endpoint:
+          type: string
+          title: Userinfo Endpoint
+        jwks_uri:
+          type: string
+          title: Jwks Uri
+        scopes_supported:
+          items:
+            type: string
+          type: array
+          title: Scopes Supported
+        response_types_supported:
+          items:
+            type: string
+          type: array
+          title: Response Types Supported
+        grant_types_supported:
+          items:
+            type: string
+          type: array
+          title: Grant Types Supported
+        subject_types_supported:
+          items:
+            type: string
+          type: array
+          title: Subject Types Supported
+        id_token_signing_alg_values_supported:
+          items:
+            type: string
+          type: array
+          title: Id Token Signing Alg Values Supported
+        token_endpoint_auth_methods_supported:
+          items:
+            type: string
+          type: array
+          title: Token Endpoint Auth Methods Supported
+        code_challenge_methods_supported:
+          items:
+            type: string
+          type: array
+          title: Code Challenge Methods Supported
+        claims_supported:
+          items:
+            type: string
+          type: array
+          title: Claims Supported
+        claims_parameter_supported:
+          type: boolean
+          title: Claims Parameter Supported
+      type: object
+      required:
+      - issuer
+      - authorization_endpoint
+      - token_endpoint
+      - userinfo_endpoint
+      - jwks_uri
+      - scopes_supported
+      - response_types_supported
+      - grant_types_supported
+      - subject_types_supported
+      - id_token_signing_alg_values_supported
+      - token_endpoint_auth_methods_supported
+      - code_challenge_methods_supported
+      - claims_supported
+      - claims_parameter_supported
+      title: OpenIDProviderMetadata
+      description: 'OpenID Connect Discovery 1.0 provider metadata.
+
+
+        Field names match the spec exactly (snake_case) so this serializes directly to a conformant
+
+        ``/.well-known/openid-configuration`` document.
+
+
+        See: https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata'

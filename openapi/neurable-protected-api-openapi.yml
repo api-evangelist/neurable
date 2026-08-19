@@ -1,0 +1,349 @@
+openapi: 3.2.0
+info:
+  title: Analytics Service Protected API
+  description: Handles the full lifecycle of EEG analytics for both customers and internal applications.
+  version: arm64-3a9ffd8
+tags:
+- name: protected
+paths:
+  /recording/download/{recording_id}:
+    get:
+      tags:
+      - protected
+      summary: Download Recording
+      description: Download a recording file of a certain processing stage.
+      operationId: download_recording_recording_download__recording_id__get
+      parameters:
+      - name: recording_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Recording Id
+      - name: stage
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/RecordingStage'
+      - name: format
+        in: query
+        required: true
+        schema:
+          $ref: '#/components/schemas/RecordingFileFormat'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /recording/upload/start:
+    post:
+      tags:
+      - protected
+      summary: Upload Recording Start
+      description: 'Start an upload session for a recording.
+
+
+        Do not include any file data on this request. This prepares the server to begin
+
+        receiving chunks. Make subsequent calls to PUT /upload/recording/{upload_token}
+
+        in order to upload file data.'
+      operationId: upload_recording_start_recording_upload_start_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUploadRecordingStartRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostUploadRecordingStartResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /recording/upload/{upload_token}:
+    put:
+      tags:
+      - protected
+      summary: Upload Recording Chunk
+      description: "Upload a chunk of a recording after starting an upload session.\n\nMaximum chunk size\
+        \ is 10MB.\n\nArgs:\n    upload_token (str): Token from /upload/recording/start issued to track\
+        \ this upload.\n    chunk_idx (int): 0-based index of this chunk, which is used to reassemble\
+        \ chunks when the upload is finished."
+      operationId: upload_recording_chunk_recording_upload__upload_token__put
+      parameters:
+      - name: upload_token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Upload Token
+      - name: chunk_idx
+        in: query
+        required: true
+        schema:
+          type: integer
+          title: Chunk Idx
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_upload_recording_chunk_recording_upload__upload_token__put'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /recording/upload/finalize/{upload_token}:
+    post:
+      tags:
+      - protected
+      summary: Upload Recording Finalize
+      description: Signal that all chunks have been successfully uploaded and they should be re-assembled
+        and verified.
+      operationId: upload_recording_finalize_recording_upload_finalize__upload_token__post
+      parameters:
+      - name: upload_token
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Upload Token
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostUploadRecordingFinalizeResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /participant:
+    post:
+      tags:
+      - protected
+      summary: Create Participant
+      description: Create a new participant for this user.
+      operationId: create_participant_participant_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostParticipantResponse'
+components:
+  schemas:
+    PostUploadRecordingStartResponse:
+      properties:
+        upload_token:
+          type: string
+          title: Upload Token
+      type: object
+      required:
+      - upload_token
+      title: PostUploadRecordingStartResponse
+    RecordingInfo:
+      properties:
+        started_at:
+          type: string
+          format: date-time
+          title: Started At
+        ended_at:
+          type: string
+          format: date-time
+          title: Ended At
+        timezone:
+          type: string
+          title: Timezone
+        id:
+          type: string
+          format: uuid
+          title: Id
+        category:
+          $ref: '#/components/schemas/RecordingCategory'
+          default: general
+      type: object
+      required:
+      - started_at
+      - ended_at
+      - timezone
+      - id
+      title: RecordingInfo
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    PostParticipantResponse:
+      properties:
+        participant_id:
+          type: string
+          title: Participant Id
+      type: object
+      required:
+      - participant_id
+      title: PostParticipantResponse
+      description: Response to a POST /participant request.
+    PostUploadRecordingStartRequest:
+      properties:
+        device:
+          $ref: '#/components/schemas/DeviceInfo'
+        recording:
+          $ref: '#/components/schemas/RecordingInfo'
+        stage:
+          anyOf:
+          - type: string
+            const: raw
+          - type: string
+            const: feature
+          title: Stage
+        participant_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Participant Id
+      type: object
+      required:
+      - device
+      - recording
+      - stage
+      title: PostUploadRecordingStartRequest
+    RecordingFileFormat:
+      type: string
+      enum:
+      - csv
+      - parquet
+      title: RecordingFileFormat
+      description: The different kinds of file formats that a recording can be downloaded as.
+    RecordingStage:
+      type: string
+      enum:
+      - raw
+      - filter
+      - feature
+      - metric
+      title: RecordingStage
+      description: Different stages of EEG processing.
+    PostUploadRecordingFinalizeResponse:
+      properties:
+        recording_id:
+          type: string
+          format: uuid
+          title: Recording Id
+        file_size_b:
+          type: integer
+          title: File Size B
+      type: object
+      required:
+      - recording_id
+      - file_size_b
+      title: PostUploadRecordingFinalizeResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DeviceInfo:
+      properties:
+        platform:
+          $ref: '#/components/schemas/HardwarePlatform'
+        platform_model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Platform Model
+        platform_version:
+          type: integer
+          title: Platform Version
+        serial_number:
+          type: string
+          title: Serial Number
+        firmware_version:
+          type: string
+          title: Firmware Version
+      type: object
+      required:
+      - platform
+      - platform_version
+      - serial_number
+      - firmware_version
+      title: DeviceInfo
+      description: 'Information required to uniquely identify a Neurable device.
+
+
+        Additional Metadata can be loaded using only this as an input.'
+    HardwarePlatform:
+      type: string
+      enum:
+      - MW75_Neuro
+      - IRON
+      - AMP1
+      title: HardwarePlatform
+      description: Different hardware platforms supported by this service.
+    RecordingCategory:
+      type: string
+      enum:
+      - general
+      - cognitive_snapshot
+      - rocket_game
+      title: RecordingCategory
+      description: What kind of a recording is this?
+    Body_upload_recording_chunk_recording_upload__upload_token__put:
+      properties:
+        chunk:
+          type: string
+          format: binary
+          title: Chunk
+          description: A chunk of the recording to be uploaded.
+      type: object
+      required:
+      - chunk
+      title: Body_upload_recording_chunk_recording_upload__upload_token__put

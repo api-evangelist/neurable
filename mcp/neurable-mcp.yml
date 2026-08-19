@@ -1,38 +1,38 @@
 generated: '2026-08-04'
 method: derived
 status: candidate
-source: >-
-  Derived from openapi/_original/neurable-analytics-service-openapi.json and
-  openapi/_original/neurable-pipe-openapi.json. Neurable operates NO MCP server — /mcp and /sse
-  return 404 on www.neurable.com, analytics-service.neurable.com, pipe.neurable.com and
-  report.neurable.com (probed 2026-08-04), and no Neurable server appears in any public MCP
-  registry.
+source: Derived from openapi/_original/neurable-analytics-service-openapi.json and openapi/_original/neurable-pipe-openapi.json.
+  Neurable operates NO MCP server — /mcp and /sse return 404 on www.neurable.com, analytics-service.neurable.com,
+  pipe.neurable.com and report.neurable.com (probed 2026-08-04), and no Neurable server appears in any
+  public MCP registry.
 server:
   exists: false
   url: null
   transport: null
   probes:
-  - {url: 'https://pipe.neurable.com/mcp', status: 404}
-  - {url: 'https://pipe.neurable.com/sse', status: 404}
-  - {url: 'https://analytics-service.neurable.com/mcp', status: 404}
-  - {url: 'https://analytics-service.neurable.com/sse', status: 404}
-  - {url: 'https://report.neurable.com/mcp', status: 404}
-  - {url: 'https://www.neurable.com/mcp', status: 404}
-pointer_policy: >-
-  Deliberately NOT wired as `type: MCPServer` in apis.yml. That pointer feeds the
-  mcp_server_present scoring check, and Neurable does not run an MCP server — claiming one on a
-  candidate design would be gaming the rubric. The pointer belongs here only if and when Neurable
-  ships a real server.
+  - url: https://pipe.neurable.com/mcp
+    status: 404
+  - url: https://pipe.neurable.com/sse
+    status: 404
+  - url: https://analytics-service.neurable.com/mcp
+    status: 404
+  - url: https://analytics-service.neurable.com/sse
+    status: 404
+  - url: https://report.neurable.com/mcp
+    status: 404
+  - url: https://www.neurable.com/mcp
+    status: 404
+pointer_policy: 'Deliberately NOT wired as `type: MCPServer` in apis.yml. That pointer feeds the mcp_server_present
+  scoring check, and Neurable does not run an MCP server — claiming one on a candidate design would be
+  gaming the rubric. The pointer belongs here only if and when Neurable ships a real server.'
 candidate_tools:
-  note: >-
-    A faithful projection of the published operations, offered as a design sketch of what a
-    Neurable MCP server could expose. Each tool's inputSchema would be inherited verbatim from the
-    named OpenAPI operation's parameters and requestBody. Nothing here is invented; every entry
-    binds to a real operationId in a real published spec.
-  authorization: >-
-    All non-open tools would require an access token from the Neurable OIDC issuer at
-    https://pipe.neurable.com. Neurable does not publish which scope covers which operation, so
-    scope bindings below are left null rather than guessed.
+  note: A faithful projection of the published operations, offered as a design sketch of what a Neurable
+    MCP server could expose. Each tool's inputSchema would be inherited verbatim from the named OpenAPI
+    operation's parameters and requestBody. Nothing here is invented; every entry binds to a real operationId
+    in a real published spec.
+  authorization: All non-open tools would require an access token from the Neurable OIDC issuer at https://pipe.neurable.com.
+    Neurable does not publish which scope covers which operation, so scope bindings below are left null
+    rather than guessed.
   tools:
   - name: create_headset_license
     rest: create_headset_license_open_headset_license_post
@@ -69,7 +69,8 @@ candidate_tools:
     consequence: read
     auth_required: true
     scope: null
-    summary: Download a recording at a named EEG processing stage (raw|filter|feature|metric) as csv or parquet.
+    summary: Download a recording at a named EEG processing stage (raw|filter|feature|metric) as csv or
+      parquet.
   - name: create_participant
     rest: create_participant_participant_post
     spec: openapi/neurable-analytics-service-openapi.yml
@@ -92,12 +93,22 @@ candidate_tools:
     scope: null
     summary: Return the pipe service version.
   excluded:
-  - {rest: get_oauth_authorize_oauth_authorize_get, reason: 'Browser redirect flow — not a tool call.'}
-  - {rest: post_oauth_token_oauth_token_post, reason: 'Credential exchange — belongs to the MCP transport auth layer, not the tool surface.'}
-  - {rest: get_well_known_jwks__well_known_jwks_json_get, reason: Infrastructure endpoint.}
-  - {rest: get_well_known_openid_configuration__well_known_openid_configuration_get, reason: Infrastructure endpoint.}
-  - {rest: get_userinfo_oidc_userinfo_get, reason: 'Duplicated by get_me; part of the auth layer.'}
+  - rest: get_oauth_authorize_oauth_authorize_get
+    reason: Browser redirect flow — not a tool call.
+  - rest: post_oauth_token_oauth_token_post
+    reason: Credential exchange — belongs to the MCP transport auth layer, not the tool surface.
+  - rest: get_well_known_jwks__well_known_jwks_json_get
+    reason: Infrastructure endpoint.
+  - rest: get_well_known_openid_configuration__well_known_openid_configuration_get
+    reason: Infrastructure endpoint.
+  - rest: get_userinfo_oidc_userinfo_get
+    reason: Duplicated by get_me; part of the auth layer.
 cross_links:
   authentication: authentication/neurable-authentication.yml
   scopes: scopes/neurable-scopes.yml
   conventions: conventions/neurable-conventions.yml
+deployment:
+  mode: none
+  verified: derived
+  checked: '2026-08-12'
+  source: catalog MCP census

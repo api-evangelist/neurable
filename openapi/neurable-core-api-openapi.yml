@@ -1,0 +1,58 @@
+openapi: 3.2.0
+info:
+  title: neu-pipe-service Core API
+  description: Real-time data processing service for analyzing EEG sensor data from Neurable hardware.
+  version: 0.0.24
+tags:
+- name: Core
+paths:
+  /version:
+    get:
+      tags:
+      - Core
+      summary: Get Version
+      description: Retrieve the APIs version.
+      operationId: get_version_version_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetVersionResponse'
+  /me:
+    get:
+      tags:
+      - Core
+      summary: Get Me
+      description: Get information about the currently authenticated user.
+      operationId: get_me_me_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMeResponse'
+components:
+  schemas:
+    GetVersionResponse:
+      properties:
+        version:
+          type: string
+          title: Version
+      type: object
+      required:
+      - version
+      title: GetVersionResponse
+      description: GET /version response.
+    GetMeResponse:
+      properties:
+        id:
+          type: string
+          title: Id
+      type: object
+      required:
+      - id
+      title: GetMeResponse
+      description: Successful GET /me response.

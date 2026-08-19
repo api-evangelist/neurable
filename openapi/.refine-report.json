@@ -1,0 +1,29 @@
+{
+  "provider": "neurable",
+  "sources": [
+    "neurable-core-api-openapi.yml",
+    "neurable-oauth-api-openapi.yml",
+    "neurable-oidc-api-openapi.yml",
+    "neurable-open-api-openapi.yml",
+    "neurable-protected-api-openapi.yml"
+  ],
+  "outputs": [
+    "neurable-core-api-openapi.yml",
+    "neurable-oauth-api-openapi.yml",
+    "neurable-oidc-api-openapi.yml",
+    "neurable-open-api-openapi.yml",
+    "neurable-protected-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "neurable-core-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neurable-oauth-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neurable-oidc-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neurable-open-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neurable-protected-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

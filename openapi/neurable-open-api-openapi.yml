@@ -1,0 +1,139 @@
+openapi: 3.2.0
+info:
+  title: Analytics Service Open API
+  description: Handles the full lifecycle of EEG analytics for both customers and internal applications.
+  version: arm64-3a9ffd8
+tags:
+- name: open
+paths:
+  /open/headset/license:
+    post:
+      tags:
+      - open
+      summary: Create Headset License
+      description: Request a signed license to unlock specified headset features.
+      operationId: create_headset_license_open_headset_license_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHeadsetLicenseRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateHeadsetLicenseResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    HeadsetLicense:
+      properties:
+        uuid:
+          type: string
+          title: Uuid
+        feature_id:
+          type: integer
+          title: Feature Id
+        timestamp:
+          type: integer
+          title: Timestamp
+        hmac:
+          type: string
+          title: Hmac
+        expiry_timestamp:
+          type: integer
+          title: Expiry Timestamp
+      type: object
+      required:
+      - uuid
+      - feature_id
+      - timestamp
+      - hmac
+      - expiry_timestamp
+      title: HeadsetLicense
+      description: Signed headset license.
+    CreateHeadsetLicenseError:
+      type: string
+      enum:
+      - SERIAL_NUMBER_UNAUTHORIZED
+      - SERIAL_NUMBER_ALREADY_ISSUED
+      title: CreateHeadsetLicenseError
+      description: Different possible errors.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CreateHeadsetLicenseRequest:
+      properties:
+        serial_number:
+          type: string
+          title: Serial Number
+        firmware_uuid:
+          type: string
+          title: Firmware Uuid
+        feature_id:
+          type: integer
+          const: 1
+          title: Feature Id
+        platform:
+          type: string
+          const: MW75_Neuro
+          title: Platform
+      type: object
+      required:
+      - serial_number
+      - firmware_uuid
+      - feature_id
+      - platform
+      title: CreateHeadsetLicenseRequest
+    CreateHeadsetLicenseResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        detail:
+          anyOf:
+          - $ref: '#/components/schemas/CreateHeadsetLicenseError'
+          - type: 'null'
+        license:
+          anyOf:
+          - $ref: '#/components/schemas/HeadsetLicense'
+          - type: 'null'
+      type: object
+      required:
+      - success
+      title: CreateHeadsetLicenseResponse
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError

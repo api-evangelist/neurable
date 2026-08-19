@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "neu-pipe-service OIDC API",
+    "version": "0.0.24"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "OIDC",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Well Known Openid Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/.well-known/openid-configuration"
+          },
+          "docs": "OpenID Connect Discovery metadata for this authorization server."
+        },
+        {
+          "info": {
+            "name": "Get Userinfo",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/oidc/userinfo"
+          },
+          "docs": "OpenID Connect UserInfo endpoint."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

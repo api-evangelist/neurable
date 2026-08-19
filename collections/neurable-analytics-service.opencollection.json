@@ -1,0 +1,140 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Analytics Service",
+    "version": "arm64-3a9ffd8"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "open",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Headset License",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/open/headset/license",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Request a signed license to unlock specified headset features."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "protected",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Download Recording",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/recording/download/:recording_id",
+            "params": [
+              {
+                "name": "recording_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "stage",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "format",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Download a recording file of a certain processing stage."
+        },
+        {
+          "info": {
+            "name": "Upload Recording Start",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/recording/upload/start",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start an upload session for a recording.\n\nDo not include any file data on this request. This prepares the server to begin\nreceiving chunks. Make subsequent calls to PUT /upload/recording/{upload_token}\nin order to upload file data."
+        },
+        {
+          "info": {
+            "name": "Upload Recording Chunk",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/recording/upload/:upload_token",
+            "params": [
+              {
+                "name": "upload_token",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "chunk_idx",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Upload a chunk of a recording after starting an upload session.\n\nMaximum chunk size is 10MB.\n\nArgs:\n    upload_token (str): Token from /upload/recording/start issued to track this upload.\n    chunk_idx (int): 0-based index of this chunk, which is used to reassemble chunks when the upload is finished."
+        },
+        {
+          "info": {
+            "name": "Upload Recording Finalize",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/recording/upload/finalize/:upload_token",
+            "params": [
+              {
+                "name": "upload_token",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Signal that all chunks have been successfully uploaded and they should be re-assembled and verified."
+        },
+        {
+          "info": {
+            "name": "Create Participant",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/participant"
+          },
+          "docs": "Create a new participant for this user."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

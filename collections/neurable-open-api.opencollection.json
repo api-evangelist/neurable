@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Analytics Service Open API",
+    "version": "arm64-3a9ffd8"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "open",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Headset License",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/open/headset/license",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Request a signed license to unlock specified headset features."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
