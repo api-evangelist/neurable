@@ -15,7 +15,7 @@ image: https://cdn.prod.website-files.com/65773cb2354a620eb230d1e4/657b30529e7a3
 url: https://raw.githubusercontent.com/api-evangelist/neurable/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-specificationVersion: '0.21'
+specificationVersion: '0.23'
 created: '2026-08-04'
 modified: '2026-08-04'
 tags:
