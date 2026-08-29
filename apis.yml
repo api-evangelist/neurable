@@ -11,6 +11,18 @@ description: >-
   but its production backend services expose FastAPI-generated OpenAPI 3.1.0 descriptions at their host roots:
   an Analytics Service handling the EEG recording lifecycle and headset feature licensing, a real-time data
   processing pipe service that is also a full OpenID Connect authorization server, and a Brain Health Service.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://cdn.prod.website-files.com/65773cb2354a620eb230d1e4/657b30529e7a3d9845248e54_Neurable-December-Opengraph%20(2).jpg
 url: https://raw.githubusercontent.com/api-evangelist/neurable/refs/heads/main/apis.yml
 x-type: company
