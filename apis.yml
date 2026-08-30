@@ -31,19 +31,19 @@ specificationVersion: '0.23'
 created: '2026-08-04'
 modified: '2026-08-04'
 tags:
-- Neurotechnology
-- Brain-Computer Interface
-- EEG
-- Neuroscience
-- Wearables
+- neurotechnology
+- brain-computer-interface
+- eeg
+- neuroscience
+- wearables
 - biosignals
-- Hardware
-- Consumer Electronics
-- Research Tools
+- hardware
+- consumer-electronics
+- research-tools
 - cognitive-analytics
-- Health Data
+- health-data
 - Authentication
-- OpenID Connect
+- openid-connect
 tags_raw:
 - neurotechnology
 - brain-computer-interface
@@ -145,7 +145,7 @@ apis:
   humanURL: https://analytics-service.neurable.com/docs
   baseURL: https://analytics-service.neurable.com
   tags:
-  - Open
+  - open
   tags_raw:
   - open
   properties:
@@ -173,7 +173,7 @@ apis:
   humanURL: https://analytics-service.neurable.com/docs
   baseURL: https://analytics-service.neurable.com
   tags:
-  - Protected
+  - protected
   tags_raw:
   - protected
   properties:
