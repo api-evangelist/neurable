@@ -99,34 +99,6 @@ apis:
     url: authentication/neurable-authentication.yml
   - type: APIReference
     url: https://report.neurable.com/docs
-- aid: neurable:neurable-oauth-api
-  name: Neurable O Auth API
-  description: The OAuth API from Neurable — 3 operation(s) for oauth.
-  humanURL: https://analytics-service.neurable.com/docs
-  baseURL: https://analytics-service.neurable.com
-  tags:
-  - Authentication
-  tags_raw:
-  - OAuth
-  properties:
-  - type: OpenAPI
-    url: openapi/neurable-oauth-api-openapi.yml
-  - type: APIReference
-    url: https://analytics-service.neurable.com/docs
-  - type: ErrorCatalog
-    url: errors/neurable-problem-types.yml
-  - type: DataModel
-    url: data-model/neurable-data-model.yml
-  - type: APIReference
-    url: https://pipe.neurable.com/docs
-  - type: OpenIDConnect
-    url: https://pipe.neurable.com/.well-known/openid-configuration
-  - type: OAuthScopes
-    url: scopes/neurable-scopes.yml
-  - type: Authentication
-    url: authentication/neurable-authentication.yml
-  - type: APIReference
-    url: https://report.neurable.com/docs
 - aid: neurable:neurable-oidc-api
   name: Neurable OIDC API
   description: The OIDC API from Neurable — 2 operation(s) for oidc.
@@ -193,6 +165,32 @@ apis:
   properties:
   - type: OpenAPI
     url: openapi/neurable-protected-api-openapi.yml
+  - type: APIReference
+    url: https://analytics-service.neurable.com/docs
+  - type: ErrorCatalog
+    url: errors/neurable-problem-types.yml
+  - type: DataModel
+    url: data-model/neurable-data-model.yml
+  - type: APIReference
+    url: https://pipe.neurable.com/docs
+  - type: OpenIDConnect
+    url: https://pipe.neurable.com/.well-known/openid-configuration
+  - type: OAuthScopes
+    url: scopes/neurable-scopes.yml
+  - type: Authentication
+    url: authentication/neurable-authentication.yml
+  - type: APIReference
+    url: https://report.neurable.com/docs
+- aid: neurable:neurable-oauth-api
+  name: Neurable O Auth API
+  description: The OAuth API from Neurable — 3 operation(s) for oauth.
+  humanURL: https://analytics-service.neurable.com/docs
+  baseURL: https://analytics-service.neurable.com
+  tags:
+  - OAuth
+  properties:
+  - type: OpenAPI
+    url: openapi/neurable-oauth-api-openapi.yml
   - type: APIReference
     url: https://analytics-service.neurable.com/docs
   - type: ErrorCatalog
