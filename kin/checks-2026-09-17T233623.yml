@@ -2,15 +2,16 @@
 kin_checks:
   slug: neurable
   schema_version: 0.22.0
-  scored_at: '2026-09-15'
-  run_ts: 2026-09-15T230249
-  note: Actionable checks only (missed + partial). earned/na are every other check
-    in rubric/scoring-0.22.0.yml; counts below let you verify that.
+  scored_at: '2026-09-17'
+  run_ts: 2026-09-17T233623
+  note: Actionable checks (missed + partial) in `checks`, plus the ids that did not
+    apply in `na`. Everything else in rubric/scoring-0.22.0.yml was earned; counts
+    below let you verify that.
   counts:
     total: 136
-    earned: 39
+    earned: 36
     partial: 6
-    missed: 70
+    missed: 73
     na: 21
   checks:
   - id: well_known_published
@@ -26,6 +27,11 @@ kin_checks:
   - id: info_complete
     status: missed
     detail: 0 of 5 openapi documents pass
+  - id: servers_defined
+    status: missed
+    detail: 0 of 5 openapi documents pass
+  - id: servers_resolvable
+    status: missed
   - id: examples_present
     status: missed
   - id: security_schemes_defined
@@ -121,6 +127,8 @@ kin_checks:
     status: missed
   - id: reg_certification_signal
     status: missed
+  - id: reg_mandate_verified
+    status: missed
   - id: upsert_outcome_discriminator
     status: missed
   - id: upsert_alternate_key
@@ -182,3 +190,25 @@ kin_checks:
     status: partial
     earned: 1.25
     detail: 'authorship: derived'
+  na:
+  - asyncapi_3_x
+  - channels_defined
+  - contract_self_operated
+  - fhir_capability_statement
+  - fhir_resource_coverage
+  - graphql_descriptions
+  - graphql_sdl_present
+  - graphql_type_depth
+  - inbound_contract_published
+  - messages_with_schema
+  - os_code_of_conduct
+  - os_contribution_guide
+  - os_releases
+  - os_security_policy
+  - reg_camara_conformance
+  - reg_entitlement_terms
+  - reg_fapi_profile
+  - reg_pci_sca
+  - reg_write_surface
+  - security_schemes
+  - server_bindings

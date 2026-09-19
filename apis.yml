@@ -159,7 +159,7 @@ apis:
   humanURL: https://analytics-service.neurable.com/docs
   baseURL: https://analytics-service.neurable.com
   tags:
-  - protected
+  - Protected
   tags_raw:
   - protected
   properties:
@@ -187,6 +187,8 @@ apis:
   humanURL: https://analytics-service.neurable.com/docs
   baseURL: https://analytics-service.neurable.com
   tags:
+  - Authentication
+  tags_raw:
   - OAuth
   properties:
   - type: OpenAPI
