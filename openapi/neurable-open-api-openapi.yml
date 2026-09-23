@@ -4,12 +4,12 @@ info:
   description: Handles the full lifecycle of EEG analytics for both customers and internal applications.
   version: arm64-3a9ffd8
 tags:
-- name: open
+- name: Open
 paths:
   /open/headset/license:
     post:
       tags:
-      - open
+      - Open
       summary: Create Headset License
       description: Request a signed license to unlock specified headset features.
       operationId: create_headset_license_open_headset_license_post
@@ -88,6 +88,15 @@ components:
       - msg
       - type
       title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     CreateHeadsetLicenseRequest:
       properties:
         serial_number:
@@ -128,12 +137,3 @@ components:
       required:
       - success
       title: CreateHeadsetLicenseResponse
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError

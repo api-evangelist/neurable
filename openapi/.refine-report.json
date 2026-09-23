@@ -1,29 +1,45 @@
 {
   "provider": "neurable",
   "sources": [
-    "neurable-core-api-openapi.yml",
-    "neurable-oauth-api-openapi.yml",
-    "neurable-oidc-api-openapi.yml",
-    "neurable-open-api-openapi.yml",
-    "neurable-protected-api-openapi.yml"
+    "_original/neurable-analytics-service-openapi.json",
+    "_original/neurable-brain-health-service-openapi.yml",
+    "_original/neurable-pipe-openapi.json",
+    "_original/neurable-report-openapi.json"
   ],
   "outputs": [
+    "neurable-open-api-openapi.yml",
+    "neurable-protected-api-openapi.yml",
     "neurable-core-api-openapi.yml",
     "neurable-oauth-api-openapi.yml",
-    "neurable-oidc-api-openapi.yml",
-    "neurable-open-api-openapi.yml",
-    "neurable-protected-api-openapi.yml"
+    "neurable-oidc-api-openapi.yml"
   ],
-  "archived": [],
+  "archived": [
+    "deleted 1 superseded output(s) from the previous generation"
+  ],
   "errors": [],
   "warnings": [],
   "notes": [
-    "neurable-core-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "neurable-oauth-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "neurable-oidc-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "neurable-open-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "neurable-protected-api-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "apis.yml register: already-registered"
+    "2 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (4 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "neurable-analytics-service-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neurable-analytics-service-openapi.json: declared missing tag: open",
+    "neurable-analytics-service-openapi.json: declared missing tag: protected",
+    "neurable-brain-health-service-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neurable-pipe-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neurable-pipe-openapi.json: declared missing tag: Core",
+    "neurable-pipe-openapi.json: declared missing tag: OAuth",
+    "neurable-pipe-openapi.json: declared missing tag: OIDC",
+    "neurable-report-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "superseded outputs removed: neurable-o-auth-api-openapi.yml",
+    "apis.yml register: written (+1 apis, 5 total)"
   ],
-  "skipped": []
+  "skipped": [
+    "_original/neurable-pipe-service-openapi.yml: archived document superseded by a larger archived document",
+    "_original/neurable-analytics-service-openapi.yml: archived document superseded by a larger archived document",
+    "neurable-core-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "neurable-o-auth-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "neurable-oidc-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "neurable-open-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "neurable-protected-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
