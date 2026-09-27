@@ -167,6 +167,84 @@ paths:
                 $ref: '#/components/schemas/PostParticipantResponse'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    PostParticipantResponse:
+      properties:
+        participant_id:
+          type: string
+          title: Participant Id
+      type: object
+      required:
+      - participant_id
+      title: PostParticipantResponse
+      description: Response to a POST /participant request.
+    RecordingFileFormat:
+      type: string
+      enum:
+      - csv
+      - parquet
+      title: RecordingFileFormat
+      description: The different kinds of file formats that a recording can be downloaded as.
+    RecordingCategory:
+      type: string
+      enum:
+      - general
+      - cognitive_snapshot
+      - rocket_game
+      title: RecordingCategory
+      description: What kind of a recording is this?
+    PostUploadRecordingStartRequest:
+      properties:
+        device:
+          $ref: '#/components/schemas/DeviceInfo'
+        recording:
+          $ref: '#/components/schemas/RecordingInfo'
+        stage:
+          anyOf:
+          - type: string
+            const: raw
+          - type: string
+            const: feature
+          title: Stage
+        participant_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Participant Id
+      type: object
+      required:
+      - device
+      - recording
+      - stage
+      title: PostUploadRecordingStartRequest
+    HardwarePlatform:
+      type: string
+      enum:
+      - MW75_Neuro
+      - IRON
+      - AMP1
+      title: HardwarePlatform
+      description: Different hardware platforms supported by this service.
     PostUploadRecordingStartResponse:
       properties:
         upload_token:
@@ -176,6 +254,26 @@ components:
       required:
       - upload_token
       title: PostUploadRecordingStartResponse
+    Body_upload_recording_chunk_recording_upload__upload_token__put:
+      properties:
+        chunk:
+          type: string
+          format: binary
+          title: Chunk
+          description: A chunk of the recording to be uploaded.
+      type: object
+      required:
+      - chunk
+      title: Body_upload_recording_chunk_recording_upload__upload_token__put
+    RecordingStage:
+      type: string
+      enum:
+      - raw
+      - filter
+      - feature
+      - metric
+      title: RecordingStage
+      description: Different stages of EEG processing.
     DeviceInfo:
       properties:
         platform:
@@ -232,77 +330,6 @@ components:
       - timezone
       - id
       title: RecordingInfo
-    PostParticipantResponse:
-      properties:
-        participant_id:
-          type: string
-          title: Participant Id
-      type: object
-      required:
-      - participant_id
-      title: PostParticipantResponse
-      description: Response to a POST /participant request.
-    RecordingFileFormat:
-      type: string
-      enum:
-      - csv
-      - parquet
-      title: RecordingFileFormat
-      description: The different kinds of file formats that a recording can be downloaded as.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    PostUploadRecordingStartRequest:
-      properties:
-        device:
-          $ref: '#/components/schemas/DeviceInfo'
-        recording:
-          $ref: '#/components/schemas/RecordingInfo'
-        stage:
-          anyOf:
-          - type: string
-            const: raw
-          - type: string
-            const: feature
-          title: Stage
-        participant_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Participant Id
-      type: object
-      required:
-      - device
-      - recording
-      - stage
-      title: PostUploadRecordingStartRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     PostUploadRecordingFinalizeResponse:
       properties:
         recording_id:
@@ -317,39 +344,12 @@ components:
       - recording_id
       - file_size_b
       title: PostUploadRecordingFinalizeResponse
-    RecordingCategory:
-      type: string
-      enum:
-      - general
-      - cognitive_snapshot
-      - rocket_game
-      title: RecordingCategory
-      description: What kind of a recording is this?
-    HardwarePlatform:
-      type: string
-      enum:
-      - MW75_Neuro
-      - IRON
-      - AMP1
-      title: HardwarePlatform
-      description: Different hardware platforms supported by this service.
-    Body_upload_recording_chunk_recording_upload__upload_token__put:
+    HTTPValidationError:
       properties:
-        chunk:
-          type: string
-          format: binary
-          title: Chunk
-          description: A chunk of the recording to be uploaded.
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - chunk
-      title: Body_upload_recording_chunk_recording_upload__upload_token__put
-    RecordingStage:
-      type: string
-      enum:
-      - raw
-      - filter
-      - feature
-      - metric
-      title: RecordingStage
-      description: Different stages of EEG processing.
+      title: HTTPValidationError

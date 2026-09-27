@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: neu-pipe-service O Auth API
+  title: neu-pipe-service OAuth API
   description: Real-time data processing service for analyzing EEG sensor data from Neurable hardware.
   version: 0.0.24
 tags:
@@ -125,32 +125,6 @@ paths:
               schema: {}
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     Body_post_oauth_token_oauth_token_post:
       properties:
         grant_type:
@@ -194,6 +168,41 @@ components:
       - grant_type
       - client_id
       title: Body_post_oauth_token_oauth_token_post
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     PostOAuthTokenResponse:
       properties:
         access_token:
@@ -231,12 +240,3 @@ components:
 
 
         Compliant with [RFC 6749 §5.1](https://datatracker.ietf.org/doc/html/rfc6749#section-5.1)'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError

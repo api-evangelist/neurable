@@ -34,6 +34,30 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    CreateHeadsetLicenseError:
+      type: string
+      enum:
+      - SERIAL_NUMBER_UNAUTHORIZED
+      - SERIAL_NUMBER_ALREADY_ISSUED
+      title: CreateHeadsetLicenseError
+      description: Different possible errors.
+    CreateHeadsetLicenseResponse:
+      properties:
+        success:
+          type: boolean
+          title: Success
+        detail:
+          anyOf:
+          - $ref: '#/components/schemas/CreateHeadsetLicenseError'
+          - type: 'null'
+        license:
+          anyOf:
+          - $ref: '#/components/schemas/HeadsetLicense'
+          - type: 'null'
+      type: object
+      required:
+      - success
+      title: CreateHeadsetLicenseResponse
     HeadsetLicense:
       properties:
         uuid:
@@ -60,13 +84,29 @@ components:
       - expiry_timestamp
       title: HeadsetLicense
       description: Signed headset license.
-    CreateHeadsetLicenseError:
-      type: string
-      enum:
-      - SERIAL_NUMBER_UNAUTHORIZED
-      - SERIAL_NUMBER_ALREADY_ISSUED
-      title: CreateHeadsetLicenseError
-      description: Different possible errors.
+    CreateHeadsetLicenseRequest:
+      properties:
+        serial_number:
+          type: string
+          title: Serial Number
+        firmware_uuid:
+          type: string
+          title: Firmware Uuid
+        feature_id:
+          type: integer
+          const: 1
+          title: Feature Id
+        platform:
+          type: string
+          const: MW75_Neuro
+          title: Platform
+      type: object
+      required:
+      - serial_number
+      - firmware_uuid
+      - feature_id
+      - platform
+      title: CreateHeadsetLicenseRequest
     ValidationError:
       properties:
         loc:
@@ -97,43 +137,3 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    CreateHeadsetLicenseRequest:
-      properties:
-        serial_number:
-          type: string
-          title: Serial Number
-        firmware_uuid:
-          type: string
-          title: Firmware Uuid
-        feature_id:
-          type: integer
-          const: 1
-          title: Feature Id
-        platform:
-          type: string
-          const: MW75_Neuro
-          title: Platform
-      type: object
-      required:
-      - serial_number
-      - firmware_uuid
-      - feature_id
-      - platform
-      title: CreateHeadsetLicenseRequest
-    CreateHeadsetLicenseResponse:
-      properties:
-        success:
-          type: boolean
-          title: Success
-        detail:
-          anyOf:
-          - $ref: '#/components/schemas/CreateHeadsetLicenseError'
-          - type: 'null'
-        license:
-          anyOf:
-          - $ref: '#/components/schemas/HeadsetLicense'
-          - type: 'null'
-      type: object
-      required:
-      - success
-      title: CreateHeadsetLicenseResponse
