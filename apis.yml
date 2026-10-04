@@ -57,7 +57,6 @@ tags:
 - cognitive-analytics
 - Health Data
 - Authentication
-- OpenID Connect
 tags_raw:
 - neurotechnology
 - brain-computer-interface
@@ -71,7 +70,6 @@ tags_raw:
 - cognitive-analytics
 - health-data
 - oauth
-- openid-connect
 apis:
 - aid: neurable:neurable-core-api
   name: Neurable Core API
@@ -282,3 +280,5 @@ x-coverage:
   - url: https://report.neurable.com/openapi.json
     status: 200
   checked: '2026-08-04'
+x-tags-removed:
+- OpenID Connect

@@ -1,21 +1,19 @@
-# Kin Score artifact — neurable — 2026-08-27T123021
+# Kin Score artifact — neurable — 2026-09-22T213221
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: neurable
-  schema_version: 0.15.1
-  scored_at: '2026-08-27'
-  run_ts: 2026-08-27T123021
-  composite: 40.9
-  band: developing
+  schema_version: 0.22.0
+  scored_at: '2026-09-22'
+  run_ts: 2026-09-22T213221
+  composite: 35.8
+  band: thin
   facets:
-    discoverability: 85.2
-    contract_quality: 48.1
-    governance: 30.3
+    discoverability: 81.5
+    contract_quality: 43.9
+    contract_governance: 18.2
     operational_transparency: 2.6
     developer_ergonomics: 28.0
-    commercial_clarity: 21.1
-    contract_governance: 30.3
     access_clarity: 21.1
   agent_readiness:
     score: 22.1
@@ -44,7 +42,7 @@ kin_score:
     applies: true
     regime: Health
     regime_id: health
-    score: 62.5
+    score: 52.5
     matched_via: tags
   provenance:
     mcp: derived
@@ -54,4 +52,4 @@ kin_score:
       total: 8
       derived: 0
       coverage: 0.0
-      callable: 62.5
+      callable: 0.0
