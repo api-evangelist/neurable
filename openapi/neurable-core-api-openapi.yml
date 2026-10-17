@@ -36,16 +36,6 @@ paths:
                 $ref: '#/components/schemas/GetMeResponse'
 components:
   schemas:
-    GetVersionResponse:
-      properties:
-        version:
-          type: string
-          title: Version
-      type: object
-      required:
-      - version
-      title: GetVersionResponse
-      description: GET /version response.
     GetMeResponse:
       properties:
         id:
@@ -56,3 +46,13 @@ components:
       - id
       title: GetMeResponse
       description: Successful GET /me response.
+    GetVersionResponse:
+      properties:
+        version:
+          type: string
+          title: Version
+      type: object
+      required:
+      - version
+      title: GetVersionResponse
+      description: GET /version response.

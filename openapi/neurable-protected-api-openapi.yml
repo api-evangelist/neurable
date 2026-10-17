@@ -177,6 +177,45 @@ components:
       - participant_id
       title: PostParticipantResponse
       description: Response to a POST /participant request.
+    RecordingCategory:
+      type: string
+      enum:
+      - general
+      - cognitive_snapshot
+      - rocket_game
+      title: RecordingCategory
+      description: What kind of a recording is this?
+    PostUploadRecordingStartResponse:
+      properties:
+        upload_token:
+          type: string
+          title: Upload Token
+      type: object
+      required:
+      - upload_token
+      title: PostUploadRecordingStartResponse
+    PostUploadRecordingFinalizeResponse:
+      properties:
+        recording_id:
+          type: string
+          format: uuid
+          title: Recording Id
+        file_size_b:
+          type: integer
+          title: File Size B
+      type: object
+      required:
+      - recording_id
+      - file_size_b
+      title: PostUploadRecordingFinalizeResponse
+    HardwarePlatform:
+      type: string
+      enum:
+      - MW75_Neuro
+      - IRON
+      - AMP1
+      title: HardwarePlatform
+      description: Different hardware platforms supported by this service.
     ValidationError:
       properties:
         loc:
@@ -198,60 +237,6 @@ components:
       - msg
       - type
       title: ValidationError
-    RecordingCategory:
-      type: string
-      enum:
-      - general
-      - cognitive_snapshot
-      - rocket_game
-      title: RecordingCategory
-      description: What kind of a recording is this?
-    HardwarePlatform:
-      type: string
-      enum:
-      - MW75_Neuro
-      - IRON
-      - AMP1
-      title: HardwarePlatform
-      description: Different hardware platforms supported by this service.
-    PostUploadRecordingFinalizeResponse:
-      properties:
-        recording_id:
-          type: string
-          format: uuid
-          title: Recording Id
-        file_size_b:
-          type: integer
-          title: File Size B
-      type: object
-      required:
-      - recording_id
-      - file_size_b
-      title: PostUploadRecordingFinalizeResponse
-    PostUploadRecordingStartRequest:
-      properties:
-        device:
-          $ref: '#/components/schemas/DeviceInfo'
-        recording:
-          $ref: '#/components/schemas/RecordingInfo'
-        stage:
-          anyOf:
-          - type: string
-            const: raw
-          - type: string
-            const: feature
-          title: Stage
-        participant_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Participant Id
-      type: object
-      required:
-      - device
-      - recording
-      - stage
-      title: PostUploadRecordingStartRequest
     Body_upload_recording_chunk_recording_upload__upload_token__put:
       properties:
         chunk:
@@ -263,6 +248,35 @@ components:
       required:
       - chunk
       title: Body_upload_recording_chunk_recording_upload__upload_token__put
+    DeviceInfo:
+      properties:
+        platform:
+          $ref: '#/components/schemas/HardwarePlatform'
+        platform_model:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Platform Model
+        platform_version:
+          type: integer
+          title: Platform Version
+        serial_number:
+          type: string
+          title: Serial Number
+        firmware_version:
+          type: string
+          title: Firmware Version
+      type: object
+      required:
+      - platform
+      - platform_version
+      - serial_number
+      - firmware_version
+      title: DeviceInfo
+      description: 'Information required to uniquely identify a Neurable device.
+
+
+        Additional Metadata can be loaded using only this as an input.'
     RecordingInfo:
       properties:
         started_at:
@@ -299,44 +313,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    PostUploadRecordingStartResponse:
-      properties:
-        upload_token:
-          type: string
-          title: Upload Token
-      type: object
-      required:
-      - upload_token
-      title: PostUploadRecordingStartResponse
-    DeviceInfo:
-      properties:
-        platform:
-          $ref: '#/components/schemas/HardwarePlatform'
-        platform_model:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Platform Model
-        platform_version:
-          type: integer
-          title: Platform Version
-        serial_number:
-          type: string
-          title: Serial Number
-        firmware_version:
-          type: string
-          title: Firmware Version
-      type: object
-      required:
-      - platform
-      - platform_version
-      - serial_number
-      - firmware_version
-      title: DeviceInfo
-      description: 'Information required to uniquely identify a Neurable device.
-
-
-        Additional Metadata can be loaded using only this as an input.'
     RecordingFileFormat:
       type: string
       enum:
@@ -353,3 +329,27 @@ components:
       - metric
       title: RecordingStage
       description: Different stages of EEG processing.
+    PostUploadRecordingStartRequest:
+      properties:
+        device:
+          $ref: '#/components/schemas/DeviceInfo'
+        recording:
+          $ref: '#/components/schemas/RecordingInfo'
+        stage:
+          anyOf:
+          - type: string
+            const: raw
+          - type: string
+            const: feature
+          title: Stage
+        participant_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Participant Id
+      type: object
+      required:
+      - device
+      - recording
+      - stage
+      title: PostUploadRecordingStartRequest

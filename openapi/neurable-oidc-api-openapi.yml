@@ -36,24 +36,6 @@ paths:
                 $ref: '#/components/schemas/GetUserInfoResponse'
 components:
   schemas:
-    GetUserInfoResponse:
-      properties:
-        sub:
-          type: string
-          title: Sub
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Email
-      type: object
-      required:
-      - sub
-      title: GetUserInfoResponse
-      description: 'OpenID Connect UserInfo response.
-
-
-        See: https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse'
     OpenIDProviderMetadata:
       properties:
         issuer:
@@ -140,3 +122,21 @@ components:
 
 
         See: https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata'
+    GetUserInfoResponse:
+      properties:
+        sub:
+          type: string
+          title: Sub
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Email
+      type: object
+      required:
+      - sub
+      title: GetUserInfoResponse
+      description: 'OpenID Connect UserInfo response.
+
+
+        See: https://openid.net/specs/openid-connect-core-1_0.html#UserInfoResponse'

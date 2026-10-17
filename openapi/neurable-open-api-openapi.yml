@@ -34,34 +34,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    CreateHeadsetLicenseError:
-      type: string
-      enum:
-      - SERIAL_NUMBER_UNAUTHORIZED
-      - SERIAL_NUMBER_ALREADY_ISSUED
-      title: CreateHeadsetLicenseError
-      description: Different possible errors.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     HeadsetLicense:
       properties:
         uuid:
@@ -88,6 +60,36 @@ components:
       - expiry_timestamp
       title: HeadsetLicense
       description: Signed headset license.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     CreateHeadsetLicenseRequest:
       properties:
         serial_number:
@@ -111,15 +113,13 @@ components:
       - feature_id
       - platform
       title: CreateHeadsetLicenseRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
+    CreateHeadsetLicenseError:
+      type: string
+      enum:
+      - SERIAL_NUMBER_UNAUTHORIZED
+      - SERIAL_NUMBER_ALREADY_ISSUED
+      title: CreateHeadsetLicenseError
+      description: Different possible errors.
     CreateHeadsetLicenseResponse:
       properties:
         success:

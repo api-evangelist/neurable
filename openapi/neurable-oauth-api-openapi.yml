@@ -125,6 +125,43 @@ paths:
               schema: {}
 components:
   schemas:
+    PostOAuthTokenResponse:
+      properties:
+        access_token:
+          type: string
+          title: Access Token
+        token_type:
+          type: string
+          const: Bearer
+          title: Token Type
+          default: Bearer
+        expires_in:
+          type: integer
+          title: Expires In
+        refresh_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Refresh Token
+        id_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Id Token
+        scope:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Scope
+      type: object
+      required:
+      - access_token
+      - expires_in
+      title: PostOAuthTokenResponse
+      description: 'Successful response from the OAuth token endpoint.
+
+
+        Compliant with [RFC 6749 §5.1](https://datatracker.ietf.org/doc/html/rfc6749#section-5.1)'
     HTTPValidationError:
       properties:
         detail:
@@ -134,6 +171,32 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     Body_post_oauth_token_oauth_token_post:
       properties:
         grant_type:
@@ -177,66 +240,3 @@ components:
       - grant_type
       - client_id
       title: Body_post_oauth_token_oauth_token_post
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    PostOAuthTokenResponse:
-      properties:
-        access_token:
-          type: string
-          title: Access Token
-        token_type:
-          type: string
-          const: Bearer
-          title: Token Type
-          default: Bearer
-        expires_in:
-          type: integer
-          title: Expires In
-        refresh_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Refresh Token
-        id_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Id Token
-        scope:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Scope
-      type: object
-      required:
-      - access_token
-      - expires_in
-      title: PostOAuthTokenResponse
-      description: 'Successful response from the OAuth token endpoint.
-
-
-        Compliant with [RFC 6749 §5.1](https://datatracker.ietf.org/doc/html/rfc6749#section-5.1)'
