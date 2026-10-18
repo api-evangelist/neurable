@@ -103,6 +103,8 @@ apis:
   humanURL: https://analytics-service.neurable.com/docs
   baseURL: https://analytics-service.neurable.com
   tags:
+  - OpenID Connect
+  tags_raw:
   - OIDC
   properties:
   - type: OpenAPI
